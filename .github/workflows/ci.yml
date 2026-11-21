@@ -77,6 +77,17 @@ jobs:
 
           run() { python -B "$@"; }
           no_stderr() { if [ -s "$1" ]; then echo "stderr from $2:"; cat "$1"; exit 1; fi; }
+          show_logs() {
+            echo "the step stopped; every captured file follows"
+            for f in /tmp/*.out /tmp/*.err; do
+              [ -f "$f" ] || continue
+              echo "===== $f"
+              cat "$f"
+            done
+          }
+          trap show_logs ERR
+          python -VV
+          python -c 'import sys, numpy, scipy, mpmath, sympy; print(sys.executable, numpy.__version__, scipy.__version__, mpmath.__version__, sympy.__version__)'
 
           cd replay
 
