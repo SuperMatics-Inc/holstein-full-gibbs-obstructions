@@ -92,8 +92,10 @@ references and no warning in the log, compares the rebuilt text with the release
 the PDF metadata and the disclosure sentence against the manuscript. The `replay` job installs
 NumPy, SciPy, mpmath and sympy with `pip`, verifies both pin files, checks that `MANIFEST.sha256`
 lists every tracked file except itself, builds the release archive with `git archive` from the
-commit, unpacks it and runs all six scripts plus the kernel, valley and charge-order mutant suites
-on the unpacked copy.
+commit, unpacks it and runs all six scripts plus the kernel, vtail, charge-order and valley mutant
+suites on the unpacked copy. Both jobs run Python 3.12, and the replay job requires each script to
+exit `0` with empty standard error and to print its documented closing line, so a script that
+warns or exits early fails the run.
 
 ## Byte custody
 
@@ -111,8 +113,8 @@ exactly the files listed by `git ls-files` at that commit.
 ## Custody notes
 
 The released bytes are copies of the reviewed files and were not edited for packaging. Three
-descriptive labels of the internal working directory (`W/MASSIVE` followed by a packet name) appear
-in two hash-frozen scripts: in the module docstrings of `replay/replay-fullgibbs.py` and
+short labels of the internal working directory, each a directory name followed by a packet
+name, appear in two hash-frozen scripts: in the module docstrings of `replay/replay-fullgibbs.py` and
 `replay/replay-valley.py`, and in one `argparse` description of `replay/replay-fullgibbs.py`. They
 are words in module and help text, never filesystem paths, and no released file reads them at run
 time. No other released file carries a workspace path or an internal label, and no review, note,
