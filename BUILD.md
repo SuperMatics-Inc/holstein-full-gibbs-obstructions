@@ -90,7 +90,8 @@ checking the digest of its archive, checks the digests of the released sources a
 manuscript with the epoch above, requires zero overfull boxes, zero underfull boxes, zero undefined
 references and no warning in the log, compares the rebuilt text with the released PDF, and checks
 the PDF metadata and the disclosure sentence against the manuscript. The `replay` job installs
-NumPy, SciPy, mpmath and sympy with `pip`, verifies both pin files, checks that `MANIFEST.sha256`
+NumPy, SciPy, mpmath, sympy and uv with `pip` (uv is what the kernel script's mutant driver uses to spawn
+its ten child processes), verifies both pin files, checks that `MANIFEST.sha256`
 lists every tracked file except itself, builds the release archive with `git archive` from the
 commit, unpacks it and runs all six scripts plus the kernel, vtail, charge-order and valley mutant
 suites on the unpacked copy. Both jobs run Python 3.12, and the replay job requires each script to
