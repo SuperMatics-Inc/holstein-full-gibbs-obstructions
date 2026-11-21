@@ -1,0 +1,210 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  TECTONIC_VERSION: "0.17.0"
+  TECTONIC_SHA256: "8533d07f9ccbd7a65824b9e0459041bca34af1eb33daba48f59215593753a3b7"
+  SOURCE_DATE_EPOCH: "1795132800"
+
+jobs:
+  replay:
+    name: Replay the six supplement scripts from the release archive
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install the replay dependencies
+        run: |
+          python -m pip install --quiet --disable-pip-version-check numpy scipy mpmath sympy
+          python -c "import numpy, scipy, mpmath, sympy; print(numpy.__version__, scipy.__version__, mpmath.__version__, sympy.__version__)"
+
+      - name: Pinned sources match the review
+        run: |
+          sha256sum paper/main.tex | grep -qx '33a4f4b7fcb6d5c1cb98cc6e83197f183f1cf31e6989a36669ad826431c904ac  paper/main.tex'
+          sha256sum paper/refs.bib | grep -qx 'a0259a202f20c81d9e990ea90911c6e7ac482a48b7fd000c39e9cbd3bd236ff9  paper/refs.bib'
+          sha256sum paper/main.pdf | grep -qx '665157947d8961217954cf75249254f247553a83d4f65597fd7dc9f4edd3fc8f  paper/main.pdf'
+          sha256sum replay/README.md | grep -qx '39f94fbca5db3cbe1a143c3f9aa2bc221055b8938be1492db8faa1c0ce7c78d2  replay/README.md'
+          sha256sum replay/SHA256SUMS | grep -qx '4aff440767c456b67b8643c23e6f9e4a6c27839af1f6380931509fca3ee60a1e  replay/SHA256SUMS'
+          sha256sum replay/replay-kernel.py | grep -qx '9af5e1bed2179fddd360405b75135e65e8f52c8afb6396f84f29d86dc4064254  replay/replay-kernel.py'
+          sha256sum replay/replay-vtail.py | grep -qx 'f6bdf8413c11578e30e4f2eb8fda3eab6c40ce498543c43659a3433d1284f121  replay/replay-vtail.py'
+          sha256sum replay/replay-cdw.py | grep -qx 'eb3ab217ca1804f0beaa1c91103871edbd36641a7849348092990ff429f03827  replay/replay-cdw.py'
+          sha256sum replay/independent-cdw.py | grep -qx '157ec0e6af5ea8d2e095a9bf71cc56f2acbfb14f4ef1000d11d6690d56fb331a  replay/independent-cdw.py'
+          sha256sum replay/replay-fullgibbs.py | grep -qx '85d15542392bffd2d45f6bc9ee7480a7c082206fc1686b8c4fa5da8013d321b2  replay/replay-fullgibbs.py'
+          sha256sum replay/replay-valley.py | grep -qx 'e412c7e3abd46e4da4cc528ee14d6feee8c0e4354795b1e7b094ca03ffd0f430  replay/replay-valley.py'
+
+      - name: Both pin files verify
+        run: |
+          sha256sum -c --strict MANIFEST.sha256
+          (cd replay && sha256sum -c --strict SHA256SUMS)
+
+      - name: The manifest covers every tracked file
+        run: |
+          git ls-files | grep -vx 'MANIFEST.sha256' | sort > /tmp/tracked.txt
+          grep -v '^\s*$' MANIFEST.sha256 | sed -E 's/^[0-9a-f]{64}  //' | sort > /tmp/manifested.txt
+          diff -u /tmp/tracked.txt /tmp/manifested.txt
+          echo "manifest entries: $(wc -l < /tmp/manifested.txt)"
+
+      - name: No review, notes, fix or backup files, and no stray identifier
+        run: |
+          test -z "$(find . -path ./.git -prune -o -type f \( -iname '*review*' -o -iname 'notes*' -o -iname '*fix*' -o -iname '*scoping*' -o -iname '*.v[0-9].*' -o -iname '*.bak' \) -print)"
+          test -z "$(git grep -il 'a[s]tra' -- . || true)"
+
+      - name: Build the release archive and run every script on the unpacked copy
+        run: |
+          git archive --format=zip --prefix=holstein-full-gibbs-obstructions-1.0.0/ \
+            --output=/tmp/release.zip HEAD
+          mkdir /tmp/unpacked
+          unzip -q /tmp/release.zip -d /tmp/unpacked
+          tracked="$(git ls-files | wc -l)"
+          cd /tmp/unpacked/holstein-full-gibbs-obstructions-1.0.0
+          test "$(find . -type f | wc -l)" -eq "$tracked"
+          sha256sum -c --strict MANIFEST.sha256
+          (cd replay && sha256sum -c --strict SHA256SUMS)
+
+          run() { python -B "$@"; }
+
+          cd replay
+
+          run replay-kernel.py > /tmp/kernel.out 2> /tmp/kernel.err
+          test ! -s /tmp/kernel.err
+          grep -qF 'REPLAY exit=0' /tmp/kernel.out
+
+          run replay-kernel.py --mutants > /tmp/kernel-mutants.out 2> /tmp/kernel-mutants.err
+          test ! -s /tmp/kernel-mutants.err
+          grep -qxF 'MUTANTS all 10 refused with exit 1; driver exit=0' /tmp/kernel-mutants.out
+
+          run replay-vtail.py > /tmp/vtail.out 2> /tmp/vtail.err
+          test ! -s /tmp/vtail.err
+          grep -qF 'PASS: endpoint arithmetic, exact CAR blocks, independent channels, 8 converged dimer ED points.' /tmp/vtail.out
+
+          run replay-vtail.py --mutants > /tmp/vtail-mutants.out 2> /tmp/vtail-mutants.err
+          test ! -s /tmp/vtail-mutants.err
+          grep -qxF 'PASS: 8/8 mutants rejected by their designated guards; each exit 1.' /tmp/vtail-mutants.out
+
+          run replay-cdw.py > /tmp/cdw.out 2> /tmp/cdw.err
+          test ! -s /tmp/cdw.err
+          grep -qxF 'CERTIFICATE OK: exact algebra/intervals only; full-Gibbs CDW LRO OPEN' /tmp/cdw.out
+
+          run replay-cdw.py --all-mutants > /tmp/cdw-mutants.out 2> /tmp/cdw-mutants.err
+          test ! -s /tmp/cdw-mutants.err
+          grep -qxF 'ALL 12 MUTANTS REJECTED; aggregate exit=0' /tmp/cdw-mutants.out
+
+          run independent-cdw.py > /tmp/independent.out 2> /tmp/independent.err
+          test ! -s /tmp/independent.err
+          grep -qF 'INDEPENDENT CERTIFICATE OK' /tmp/independent.out
+
+          run replay-fullgibbs.py > /tmp/fullgibbs.out 2> /tmp/fullgibbs.err
+          test ! -s /tmp/fullgibbs.err
+          grep -qE 'ALL CHECKS PASSED in [0-9.]+ s\.' /tmp/fullgibbs.out
+          grep -qF '=== GUARDED MUTANTS (9/9 CAUGHT) ===' /tmp/fullgibbs.out
+
+          run replay-valley.py > /tmp/valley.out 2> /tmp/valley.err
+          test ! -s /tmp/valley.err
+          grep -qE 'ALL REPLAY CHECKS PASSED in [0-9.]+s' /tmp/valley.out
+
+          run replay-valley.py --mutants > /tmp/valley-mutants.out 2> /tmp/valley-mutants.err
+          test ! -s /tmp/valley-mutants.err
+          grep -qE 'ALL 6/6 MUTANTS CAUGHT in [0-9.]+s' /tmp/valley-mutants.out
+
+          echo "all six scripts, the kernel mutants, the vtail mutants, the cdw mutants and the valley mutants passed on the unpacked archive"
+
+  paper:
+    name: Build the manuscript with Tectonic and verify the released PDF
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install poppler and pypdf
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+          python3 -m pip install --quiet pypdf
+
+      - name: Install the pinned Tectonic release
+        run: |
+          curl -fsSL -o /tmp/tectonic.tar.gz \
+            "https://github.com/tectonic-typesetting/tectonic/releases/download/tectonic%40${TECTONIC_VERSION}/tectonic-${TECTONIC_VERSION}-x86_64-unknown-linux-musl.tar.gz"
+          echo "${TECTONIC_SHA256}  /tmp/tectonic.tar.gz" | sha256sum -c --strict -
+          mkdir -p "$HOME/.local/bin"
+          tar -xzf /tmp/tectonic.tar.gz -C "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          "$HOME/.local/bin/tectonic" --version
+
+      - name: Released bytes match the review
+        run: |
+          cp paper/main.pdf /tmp/released.pdf
+          sha256sum paper/main.tex | grep -qx '33a4f4b7fcb6d5c1cb98cc6e83197f183f1cf31e6989a36669ad826431c904ac  paper/main.tex'
+          sha256sum paper/refs.bib | grep -qx 'a0259a202f20c81d9e990ea90911c6e7ac482a48b7fd000c39e9cbd3bd236ff9  paper/refs.bib'
+          sha256sum /tmp/released.pdf | grep -qx '665157947d8961217954cf75249254f247553a83d4f65597fd7dc9f4edd3fc8f  /tmp/released.pdf'
+
+      - name: Rebuild the manuscript with the pinned epoch
+        working-directory: paper
+        run: |
+          tectonic -X compile --keep-logs main.tex
+          test "$(grep -c '^Overfull' main.log)" -eq 0 || { grep -n '^Overfull' main.log; exit 1; }
+          test "$(grep -c '^Underfull' main.log)" -eq 0 || { grep -n '^Underfull' main.log; exit 1; }
+          test "$(grep -c 'undefined' main.log)" -eq 0 || { grep -n 'undefined' main.log; exit 1; }
+          test "$(grep -c 'Warning' main.log)" -eq 0 || { grep -n 'Warning' main.log; exit 1; }
+          pdfinfo main.pdf | tee /tmp/built.info
+          grep -qx 'Pages:[[:space:]]*28' /tmp/built.info
+          grep -q 'Davis Rens' /tmp/built.info
+          sha256sum main.pdf
+          pdftotext -raw main.pdf /tmp/built.txt
+          pdftotext -raw /tmp/released.pdf /tmp/released.txt
+          tr -d ' \n\t\r' < /tmp/built.txt > /tmp/built.flat
+          tr -d ' \n\t\r' < /tmp/released.txt > /tmp/released.flat
+          cmp /tmp/built.flat /tmp/released.flat
+          echo "the rebuilt text equals the released text"
+
+      - name: The released PDF carries the title, identifiers and disclosed status
+        run: |
+          pdfinfo /tmp/released.pdf | tee /tmp/released.info
+          grep -qx 'Pages:[[:space:]]*28' /tmp/released.info
+          grep -qx 'Title:[[:space:]]*Obstructions to lifting cold-phonon pairing bounds to the full Gibbs state in the Holstein model' /tmp/released.info
+          grep -qx 'Author:[[:space:]]*Davis Rens, SuperMatics Inc., ORCID 0000-0001-5839-5197' /tmp/released.info
+          python3 -c 'import pypdf, sys; r = pypdf.PdfReader("/tmp/released.pdf"); sys.stdout.write("\n".join(p.extract_text() or "" for p in r.pages))' > /tmp/released-pypdf.txt
+          PYTHONDONTWRITEBYTECODE=1 python3 ci/verify_text.py /tmp/released-pypdf.txt
+          PYTHONDONTWRITEBYTECODE=1 python3 ci/verify_text.py /tmp/released.txt
+
+      - name: Public prose safeguards
+        run: |
+          test "$(grep -c 'This preprint has not been peer reviewed.' paper/main.tex)" -eq 1
+          test "$(grep -c '—' paper/main.tex)" -eq 0
+          test -z "$(git grep -il 'a[s]tra' -- . || true)"
+          if git grep -nE 'D:/|C:/|/scratch/|ceiling-20261118|/Users/' -- . ':!.github/workflows/ci.yml'; then
+            echo "hardcoded local path in a released file"
+            exit 1
+          fi
+          # The only workspace labels in the released bytes are three descriptive docstring and
+          # help-string words in two hash-frozen scripts; they name a packet, never a path read
+          # at run time, and no other released file carries one.
+          test "$(grep -o 'W/MASSIVE' replay/replay-fullgibbs.py replay/replay-valley.py | wc -l)" -eq 3
+          test -z "$(git grep -l 'W/MASSIVE' -- . ':!replay/replay-fullgibbs.py' ':!replay/replay-valley.py' || true)"
+          test -z "$(find . -path ./.git -prune -o -type f \( -iname '*review*' -o -iname 'notes*' -o -iname '*fix*' -o -iname '*scoping*' -o -iname '*.v[0-9].*' -o -iname '*.bak' \) -print)"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: holstein-full-gibbs-obstructions-paper
+          path: |
+            paper/main.pdf
+            paper/main.tex
+            paper/refs.bib
+          if-no-files-found: error
