@@ -91,6 +91,14 @@ jobs:
             exit 1
           }
           no_stderr() { if [ -s "$1" ]; then echo "stderr from $2:"; cat "$1"; exit 1; fi; }
+          expect() {
+            pattern="$1"; shift; flags="$1"; shift; file="$1"
+            grep "$flags" -e "$pattern" "$file" && return 0
+            echo "EXPECTED PATTERN MISSING in $file: $pattern"
+            show_logs
+            exit 1
+          }
+          trap 'rc=$?; echo "STOPPED rc=$rc in: $BASH_COMMAND"; show_logs' ERR
           python -VV
           python -c 'import sys, numpy, scipy, mpmath, sympy; print(sys.executable, numpy.__version__, scipy.__version__, mpmath.__version__, sympy.__version__)'
           command -v uv
@@ -99,44 +107,44 @@ jobs:
 
           run replay-kernel.py > /tmp/kernel.out 2> /tmp/kernel.err
           no_stderr /tmp/kernel.err replay-kernel.py
-          grep -qF 'REPLAY exit=0' /tmp/kernel.out
+          expect "REPLAY exit=0" -qF /tmp/kernel.out
 
           run replay-kernel.py --mutants > /tmp/kernel-mutants.out 2> /tmp/kernel-mutants.err
           no_stderr /tmp/kernel-mutants.err replay-kernel.py --mutants
-          grep -qxF 'MUTANTS all 10 refused with exit 1; driver exit=0' /tmp/kernel-mutants.out
+          expect "MUTANTS all 10 refused with exit 1; driver exit=0" -qxF /tmp/kernel-mutants.out
 
           run replay-vtail.py > /tmp/vtail.out 2> /tmp/vtail.err
           no_stderr /tmp/vtail.err replay-vtail.py
-          grep -qF 'PASS: endpoint arithmetic, exact CAR blocks, independent channels, 8 converged dimer ED points.' /tmp/vtail.out
+          expect "PASS: endpoint arithmetic, exact CAR blocks, independent channels, 8 converged dimer ED points." -qF /tmp/vtail.out
 
           run replay-vtail.py --mutants > /tmp/vtail-mutants.out 2> /tmp/vtail-mutants.err
           no_stderr /tmp/vtail-mutants.err replay-vtail.py --mutants
-          grep -qxF 'PASS: 8/8 mutants rejected by their designated guards; each exit 1.' /tmp/vtail-mutants.out
+          expect "PASS: 8/8 mutants rejected by their designated guards; each exit 1." -qxF /tmp/vtail-mutants.out
 
           run replay-cdw.py > /tmp/cdw.out 2> /tmp/cdw.err
           no_stderr /tmp/cdw.err replay-cdw.py
-          grep -qxF 'CERTIFICATE OK: exact algebra/intervals only; full-Gibbs CDW LRO OPEN' /tmp/cdw.out
+          expect "CERTIFICATE OK: exact algebra/intervals only; full-Gibbs CDW LRO OPEN" -qxF /tmp/cdw.out
 
           run replay-cdw.py --all-mutants > /tmp/cdw-mutants.out 2> /tmp/cdw-mutants.err
           no_stderr /tmp/cdw-mutants.err replay-cdw.py --all-mutants
-          grep -qxF 'ALL 12 MUTANTS REJECTED; aggregate exit=0' /tmp/cdw-mutants.out
+          expect "ALL 12 MUTANTS REJECTED; aggregate exit=0" -qxF /tmp/cdw-mutants.out
 
           run independent-cdw.py > /tmp/independent.out 2> /tmp/independent.err
           no_stderr /tmp/independent.err independent-cdw.py
-          grep -qF 'INDEPENDENT CERTIFICATE OK' /tmp/independent.out
+          expect "INDEPENDENT CERTIFICATE OK" -qF /tmp/independent.out
 
           run replay-fullgibbs.py > /tmp/fullgibbs.out 2> /tmp/fullgibbs.err
           no_stderr /tmp/fullgibbs.err replay-fullgibbs.py
-          grep -qE 'ALL CHECKS PASSED in [0-9.]+ s\.' /tmp/fullgibbs.out
-          grep -qF '=== GUARDED MUTANTS (9/9 CAUGHT) ===' /tmp/fullgibbs.out
+          expect "ALL CHECKS PASSED in [0-9.]+ s\." -qE /tmp/fullgibbs.out
+          expect "=== GUARDED MUTANTS (9/9 CAUGHT) ===" -qF /tmp/fullgibbs.out
 
           run replay-valley.py > /tmp/valley.out 2> /tmp/valley.err
           no_stderr /tmp/valley.err replay-valley.py
-          grep -qE 'ALL REPLAY CHECKS PASSED in [0-9.]+s' /tmp/valley.out
+          expect "ALL REPLAY CHECKS PASSED in [0-9.]+s" -qE /tmp/valley.out
 
           run replay-valley.py --mutants > /tmp/valley-mutants.out 2> /tmp/valley-mutants.err
           no_stderr /tmp/valley-mutants.err replay-valley.py --mutants
-          grep -qE 'ALL 6/6 MUTANTS CAUGHT in [0-9.]+s' /tmp/valley-mutants.out
+          expect "ALL 6/6 MUTANTS CAUGHT in [0-9.]+s" -qE /tmp/valley-mutants.out
 
           echo "all six scripts, the kernel mutants, the vtail mutants, the cdw mutants and the valley mutants passed on the unpacked archive"
 
