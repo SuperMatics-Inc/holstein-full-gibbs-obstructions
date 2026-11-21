@@ -1,0 +1,1924 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[hidelinks,pdfusetitle]{hyperref}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{booktabs}
+\newcommand{\DOI}[1]{\mbox{\href{https://doi.org/#1}{\nolinkurl{#1}}}}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\spec}{spec}
+\DeclareMathOperator{\dist}{dist}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\ad}{ad}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Tpair}{T_{\mathrm{pair}}}
+\newcommand{\Tcold}{T_{\mathrm{pair}}^{\mathrm{cold}}}
+\newcommand{\Nodd}{N_{\mathrm{odd}}}
+\newcommand{\Dop}{\Delta}
+\newcommand{\Dir}{K_{\beta}^{\mathrm{dir}}}
+\newcommand{\Kcov}{K_{\beta}^{\mathrm{cov}}}
+\newcommand{\cold}{\mathrm{cold}}
+\newcommand{\LF}{\mathrm{LF}}
+\emergencystretch=1.5em
+\title{Obstructions to lifting cold-phonon pairing bounds to the full Gibbs
+state in the Holstein model}
+\author{Davis Rens\\SuperMatics Inc.\\\href{https://orcid.org/0000-0001-5839-5197}{ORCID 0000-0001-5839-5197}}
+\date{}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For the spinful Holstein model at large $U/\Omega$, a recently released
+argument bounds the polaronic pair-decay temperature by
+$2^{26}(t^{2}/U)e^{-7U/(8\Omega)}$, but only on a cold manifold that keeps the
+odd-site occupation zero and the phonon occupation below
+$M=\lfloor U/(64\Omega)\rfloor$ at every site. Removing that projection, so that
+the same ceiling holds for the Gibbs state of the unprojected Hamiltonian, is
+open, and this note does not close it. It records why five natural route families
+fail, quantifies what any surviving route must control, and isolates the remaining
+statement. First, five route families are obstructed at the level of specified
+estimates: operator Schrieffer-Wolff and phonon-number Lyapunov bounds, Gaussian
+domination of the Lang-Firsov influence functional, reflection positivity,
+log-concavity of the phonon marginal, and cut Schrieffer-Wolff without a global
+projection. Second, the cutoff-free directed pair-transfer kernel satisfies an
+exact bound that carries the same $e^{-(U/\Omega)\coth(\beta\Omega/4)}$ exponent,
+but the influence weight of an electron history does not factorize over disjoint
+time segments: an explicit legal history with four bond charges has conditional
+log weight exceeding the free directed maximum by at least $3/4$ for all
+$U/\Omega\ge20$ at $\beta\Omega=1$, and a closed four-hop pair-return loop costs
+action at most $3$ independently of $U/\Omega$. A facing-plateau lemma survives
+with the weaker constant $3/22$ and does not add along a spatial skeleton. A
+sixth route, written in the distortion coordinate, removes the cold projection at
+the level of the two-site problem: it gives a non-asymptotic splitting bound, an
+excursion bound at every temperature, and a volume-uniform many-body barrier
+bound, but it stops at the same locality step, because local valley projectors
+leak at order $t^{2}/U$ rather than exponentially.
+Third, in the bare Lang-Firsov frame the population of the hot region
+$N_{z}>M$ is at least $c_{2}(t/U)^{2}$ with $c_{2}=1/4096$, on the dimer and,
+with volume-uniform constants, on every torus and every finite
+vertex-transitive regular graph, at every temperature in a fixed window and for
+all hopping below an explicit power of $\Omega^{3}/U^{2}$. A separate
+second-order Duhamel calculation on the dimer gives the same conclusion with a
+different constant. The channel weight of a first-order virtual transfer tends
+to $1/4$ both in the bare frame and after the first Schrieffer-Wolff rotation
+used in the cold-projected proof, so that rotation removes the electronic gap
+from the denominator and leaves the virtual cloud intact. Fourth, the same wall
+appears in the charge-order problem: the strong-coupling pseudospin theory of the
+same model is a known easy-axis model, and the first full-Fock transform, an
+explicit local frequency window and a fixed-history trace bound are supplied
+here, but positive-temperature charge order remains open at a decorated-contour
+lemma that the nearest rigorous theorem cannot supply. The open problem for the
+ceiling is a normalized charged-skeleton influence bound, stated here precisely.
+No pairing ceiling, and no bound on any critical temperature, is proved or
+disproved.
+\end{abstract}
+
+\section{Question, scope, and prior work}
+
+This note is the third in a series that separates what is known about pair
+correlations in electron-phonon models from what is merely plausible. The first
+\cite{barriers1} examined determinant zeros of single-spin propagators. The
+second \cite{barriers2} examined integrated dynamic cumulants,
+positive determinants, reflection positivity and the vanishing effective
+attraction of bond coupling. The present note concerns a different and narrower
+question: whether a bound that has been proved under a cold-phonon projection can
+be transferred to the full Gibbs state of the same Hamiltonian.
+
+\subsection{The released statement, and the step that is missing}
+
+For the spinful Holstein model on the square torus, with polaronic energy
+$U=F^{2}/K$, phonon frequency $\Omega$, hopping $t$, and $X=U/\Omega$, the
+companion \cite{largeu} proves the following. Let
+$M=\lfloor X/64\rfloor$. On the cold manifold that keeps every site doubly
+occupied or empty and every site phonon number at most $M$, after a
+first-order Schrieffer-Wolff rotation, the equal-time polaronic pair correlations
+decay algebraically with an exponent that is positive, and above all temperatures
+$\tau$ with
+\begin{equation}
+\tau>2^{26}\,\frac{t^{2}}{U}\,e^{-\frac{7}{8}X},
+\label{eq:coldceiling}
+\end{equation}
+uniformly summable. In the notation recalled in Section~\ref{sec:model} this
+reads $k_{\mathrm{B}}\Tcold\le 2^{26}(t^{2}/U)e^{-7U/(8\Omega)}$.
+
+That bound is a bound on a projected quantity. The physically natural companion
+statement, the same inequality for the pair-decay temperature $\Tpair$ of the
+Gibbs state of the unprojected Hamiltonian, would be a genuine ceiling: at strong
+coupling, that is $\Omega$ small compared with $U$ at fixed $t$ and $U$, it
+narrows to zero as $\Omega\downarrow0$. Whether it holds is open. It is not
+implied by \eqref{eq:coldceiling}, and the projected exponent is not a bound on
+the discarded sector.
+
+Two obstructions were already isolated in \cite{largeu} itself. The first is
+thermal and is geometric in the volume: the Gibbs weight of the cold manifold of
+the atomic reference vanishes like
+$\exp(-|\Lambda|e^{-\beta\Omega(M+1)})$ at every fixed temperature, so restricting
+the Gibbs trace to the cold manifold cannot reproduce a linear-in-$X$ exponent.
+The second is a bond-local floor on two-site pair transfer. Neither says
+anything about the size of the discarded sector inside the true Gibbs state. This
+note records further obstructions, of a different character, together with
+the local statements that survive them.
+
+\subsection{Summary of the results}
+
+The results fall into six groups, in the order in which the note presents them.
+
+\begin{enumerate}[label=(\Alph*),leftmargin=2.2em]
+\item \emph{Five route families are obstructed at the level of specified
+estimates} (Section~\ref{sec:routes}). Operator-level Schrieffer-Wolff and
+phonon-number Lyapunov bounds meet a Franck-Condon virtual cloud of weight
+$\Theta((t/U)^{2})$ at phonon number of order $X$, and the full-space
+Schrieffer-Wolff generator is not defined because of exact resonances. Gaussian
+domination of the Lang-Firsov influence functional discards the only factor that
+carries $\Omega$. Neither candidate reflection kernel is reflection positive on
+the smallest two-dimensional torus. The integrated phonon marginal is not
+log-concave. Cut Schrieffer-Wolff loses to an exponent counting argument on any
+bond whose endpoint is hot. What survives is a single-site entropy bound that is
+uniform in volume but of order $t/U$ per site, hence of no use on its own.
+\item \emph{A distortion-coordinate route removes the cold projection on the dimer
+and stops at locality} (Section~\ref{sec:valley}). Written in the physical
+distortion coordinate, the dimer becomes a three-channel double well whose barrier
+is $(U-t)^{2}/U$ and whose width is set by $U/\Omega$, so the splitting is
+exponentially small in $U/\Omega$ without any projection. Three statements are
+proved with no adiabatic approximation and no truncation of the electronic sector:
+for the full $3\times3$ matrix operator the ground-doublet splitting obeys
+$E_{1}-E_{0}\le Ue^{-c_{0}X}$ with
+$c_{0}=\frac12c_{\mathrm{WKB}}(x,\frac18)\ge0.655327$ for every $X\ge31$; an
+excursion bound holds at every temperature with an exact cancellation of the
+$\beta\Omega$ factor; and the many-body Born-Oppenheimer barrier obeys a
+volume-uniform tensorization inequality, so no collective distortion lowers it
+below $U/2-4dt$ per site. The route fails one step later: local valley projectors
+fail to commute with the boundary hopping, with a fixed-distortion three-site
+leakage of $0.1408944\approx\sqrt{2}\,t^{2}/(2U)$, and inside a valley the neutral
+fermion dynamics obeys $\beta t^{2}/U\gg1$ in the target strip.
+\item \emph{The cutoff-free directed kernel is correct and insufficient}
+(Section~\ref{sec:kernel}). The two-oscillator trace of two same-direction hops
+has an exact closed form, and the integrated directed kernel obeys
+\begin{equation}
+\Dir:=2t^{2}\int_{0}^{\beta}e^{-Uu}F_{+}(u)\,du
+\le\frac{2t^{2}}{U}\bigl(1-e^{-\beta U}\bigr)e^{-X\coth(\beta\Omega/4)} ,
+\label{eq:dir}
+\end{equation}
+whose exponent is exactly the kind of narrowing one wants. The exact influence
+action is recalled, including the displacement that the physical pair field
+carries on its endpoints. But the weight of a chronological sequence of bond
+charges does not factorize over disjoint time segments. An explicit legal
+four-charge history exceeds the largest value any free directed block can take,
+by an interval-enclosed margin of about $9.3$ at $U=40$, and by at least $3/4$ for
+every $U/\Omega\ge20$ at $\beta\Omega=1$. A closed four-hop pair-return loop
+costs total action at most $3$ regardless of $U/\Omega$. A facing-plateau lemma
+does survive, with constant $3/22$, but its cost is local and does not add along a
+skeleton.
+\item \emph{The hot sector is not empty, at any temperature, and is
+algebraically large} (Section~\ref{sec:vtail}). In the bare Lang-Firsov frame
+the probability $\langle\mathbf{1}_{\{N_{z}>M\}}\rangle$ is at least
+$c_{2}(t/U)^{2}$ with $c_{2}=1/4096$ on the dimer, on every torus with
+volume-uniform constants, and on every finite vertex-transitive regular graph.
+The proof is a local finite-rank commutator on the unbounded bosonic Fock space,
+with no truncation of the Gibbs state. An independent second-order Duhamel
+calculation on the dimer reaches the same conclusion with different constants,
+$c_{2}^{\mathrm{Du}}=h/1024$ with $h=(1-e^{-a})^{2}$ at the lower endpoint $a$ of
+the temperature window, and an explicit cubic remainder. The virtual channel weight of a first-order transfer tends to
+$1/4$ in the bare frame and to $1/4$ after the first Schrieffer-Wolff rotation;
+that rotation removes the electronic gap from the denominator and leaves the
+Franck-Condon cloud untouched. What remains open is a nonperturbative lower bound
+after that rotation.
+\item \emph{Charge order stops at the same wall} (Section~\ref{sec:cdw}). In the
+half-filled model the strong-coupling pseudospin theory is known to be an easy-axis
+XXZ model with a strictly positive anisotropy at every finite frequency; that
+identification is prior art, cited as such. What is added is a bounded
+Lie-Schwinger generator on the unrestricted Fock space with volume-uniform
+connected-word bounds, an explicit local frequency window
+$U/8\le\omega\le U/4$ with $J_{xy}/J_{z}<1/16$, and a fixed-history Schatten
+trace bound valid for $\beta D\ge4$. Positive-temperature charge-order long-range
+order for the pure model remains open at a precisely stated decorated-contour
+lemma, which the nearest rigorous bosonic contour theorem cannot supply because it
+requires a positive direct repulsion.
+\item \emph{The remaining statement is a charged-skeleton influence bound}
+(Section~\ref{sec:openproblem}). Combining the failures above singles out one
+missing lemma, which is stated explicitly: a deterministic skeleton for
+long-lived pair transport, a bound on the signed sum of neutral histories
+normalized by the true partition function, a bounded-overlap allocation of local
+plateau costs, and a convergent remainder for short virtual histories. No
+implication in either direction between that lemma and the lifted ceiling is
+proved here.
+\end{enumerate}
+
+None of these statements is a physical counterexample, and none is evidence about
+a material. Each concerns a precisely described class of estimates applied to a
+precisely described model quantity. In particular, nothing here shows that the
+lifted ceiling is false, and nothing here shows that a contour or polymer argument
+cannot reach it. The cold-projected theorem of \cite{largeu} stands as released.
+
+\section{Model, notation, and the lifted quantity}
+\label{sec:model}
+
+\subsection{The spinful Holstein model}
+
+Fix an integer side $L\ge4$ and let $\Lambda=T_{L}=(\mathbb{Z}/L\mathbb{Z})^{2}$
+be the square torus with nearest-neighbour edge set $E(\Lambda)$ and torus
+distance $d(x,y)$. Each site carries one oscillator coordinate and a spinful
+electronic level with four states. With $t\ge0$, $\Omega>0$,
+$\alpha=\sqrt{U/(2\Omega)}$, $g=\sqrt{U\Omega/2}$ in the convention
+$g(a_{x}^{\dagger}+a_{x})(n_{x}-1)$, and real $\mu$, the Hamiltonian is
+\cite{holstein1959}
+\begin{equation}
+H_{\Lambda}=-t\sum_{e\in E(\Lambda)}\sum_{\sigma}B_{e,\sigma}
++\Omega\sum_{x\in\Lambda}a_{x}^{\dagger}a_{x}
+-\sqrt{\frac{U\Omega}{2}}\sum_{x\in\Lambda}(n_{x}-1)\bigl(a_{x}^{\dagger}+a_{x}\bigr)
+-\mu\sum_{x\in\Lambda}n_{x},
+\label{eq:H}
+\end{equation}
+with $B_{e,\sigma}=c_{u\sigma}^{\dagger}c_{v\sigma}+c_{v\sigma}^{\dagger}c_{u\sigma}$
+for $e=\{u,v\}$, $n_{x}=n_{x\uparrow}+n_{x\downarrow}$, and $U=F^{2}/K>0$ the
+polaronic energy of the oscillator. There is no direct electron-electron
+interaction. We write $\tau=k_{\mathrm{B}}T=\beta^{-1}$, $\hbar=1$, and the two
+dimensionless ratios
+\begin{equation}
+x=\frac{t}{U},\qquad X=\frac{U}{\Omega} .
+\label{eq:ratios}
+\end{equation}
+The equal-time on-site pair field is $\Dop_{x}=c_{x\downarrow}c_{x\uparrow}$, with
+the operator order fixed once. The projector onto singly occupied sites is
+$\mathbf{1}_{\{n_{x}=1\}}=1-(n_{x}-1)^{2}$, and
+$\Nodd=\sum_{x}(1-(n_{x}-1)^{2})$.
+
+Where a result holds for a general finite graph, for instance in
+Section~\ref{sec:vtail}, we say so and take $\Lambda$ finite, simple,
+vertex-transitive of degree $q$; the torus is the case $q=2d$ with $L\ge3$.
+Nothing below uses two-dimensional reflection positivity except where that is the
+object of study.
+
+\subsection{Lang-Firsov frame and the cold manifold}
+
+Let $D_{x}(\gamma)=\exp(\gamma(a_{x}^{\dagger}-a_{x}))$ be the Weyl displacement,
+and let
+\begin{equation}
+U_{\LF}=\exp\Bigl(-\alpha\sum_{x\in\Lambda}(n_{x}-1)(a_{x}^{\dagger}-a_{x})\Bigr),
+\qquad \alpha=\sqrt{\frac{X}{2}} ,
+\label{eq:ulf}
+\end{equation}
+be the Lang-Firsov transformation \cite{langfirsov}. Since $U_{\LF}$ commutes with
+$n_{x}$ and therefore with the charge,
+\begin{equation}
+U_{\LF}a_{x}U_{\LF}^{\dagger}=a_{x}+\alpha(n_{x}-1),\qquad
+U_{\LF}c_{x\sigma}^{\dagger}U_{\LF}^{\dagger}=c_{x\sigma}^{\dagger}D_{x}(-\alpha),\qquad
+U_{\LF}c_{x\sigma}U_{\LF}^{\dagger}=c_{x\sigma}D_{x}(+\alpha).
+\label{eq:lfacts}
+\end{equation}
+With $\Omega\alpha^{2}=U/2$ and $(n_{x}-1)^{2}=1-n_{x,\mathrm{odd}}$ the linear
+coupling cancels. Dropping the additive constant $-\tfrac U2|\Lambda|$,
+\begin{equation}
+H_{\LF}=U_{\LF}H_{\Lambda}U_{\LF}^{\dagger}+\tfrac U2|\Lambda|
+=D_{0}+H_{\mathrm{ph}}+V_{\mathrm{mix}}+V_{\mathrm{diag}},
+\label{eq:HLF}
+\end{equation}
+with $H_{\mathrm{ph}}=\Omega\sum_{x}n^{\mathrm{ph}}_{x}$, $D_{0}=\tfrac U2\Nodd-\mu N$,
+and for each oriented edge, writing $A_{e}=\sum_{\sigma}c_{u\sigma}^{\dagger}c_{v\sigma}$,
+\begin{equation}
+V_{e}=-t\bigl(A_{e}D_{u}(-\alpha)D_{v}(\alpha)+\mathrm{h.c.}\bigr),
+\qquad V_{\mathrm{mix}}=\sum_{e}\bigl(P_{e,0}V_{e}P_{e,2}+P_{e,2}V_{e}P_{e,0}\bigr),
+\label{eq:Ve}
+\end{equation}
+where $P_{e,j}$ projects onto $n_{u,\mathrm{odd}}+n_{v,\mathrm{odd}}=j$ and
+$V_{\mathrm{diag}}=\sum_{e}(V_{e}-V_{e,\mathrm{mix}})$. Writing
+$A_{e,\mathrm{mix}}=P_{e,0}A_{e}P_{e,2}+P_{e,2}A_{e}P_{e,0}$ and
+$A_{e,\mathrm{diag}}=P_{e,1}A_{e}P_{e,1}$, on the sixteen electronic states of a
+bond $\|A_{e,\mathrm{mix}}\|_{\mathrm{op}}=\sqrt2$ and
+$\|A_{e,\mathrm{diag}}\|_{\mathrm{op}}=1$.
+
+For $X\ge1$ put $M=\lfloor X/64\rfloor$ and define the orthogonal projector
+\begin{equation}
+P_{\cold}=\prod_{z\in\Lambda}\Bigl((1-n_{z,\mathrm{odd}})\,
+\mathbf{1}_{\{n^{\mathrm{ph}}_{z}\le M\}}\Bigr),
+\qquad \mathcal{H}_{\cold}=\operatorname{ran}P_{\cold},
+\label{eq:pcold}
+\end{equation}
+following \cite{largeu}. Let $S_{1}$ be the first-order Schrieffer-Wolff
+generator of \cite{largeu}, which is the sum over bonds of
+\begin{equation}
+S_{1,e}=x\Bigl[\bigl(P_{e,0}A_{e}P_{e,2}-P_{e,2}A_{e}P_{e,0}\bigr)D_{u}(-\alpha)D_{v}(\alpha)-\mathrm{h.c.}\Bigr],
+\qquad [S_{1},D_{0}]=-V_{\mathrm{mix}} .
+\label{eq:S1}
+\end{equation}
+The cold-projected effective Hamiltonian is
+$H_{\cold}=P_{\cold}e^{S_{1}}H_{\LF}e^{-S_{1}}P_{\cold}$ on the
+finite-dimensional space $\mathcal{H}_{\cold}$, and its Gibbs state is denoted
+$\langle\cdot\rangle_{\cold}$. The Schrieffer-Wolff transformation itself, and the
+question of when such a rotation is a legitimate tool, is the subject of the
+standard references \cite{bdl,dff,dls}.
+
+\subsection{The two temperatures}
+
+The model quantity that every result in this series concerns is a clustering
+threshold for one two-point function, not a transition temperature.
+
+\begin{definition}[clustering temperatures; \cite{largeu}]
+\label{def:tpair}
+Let $\Tpair$ be the infimum of the temperatures $\tau$ with the following
+property: for every $\tau'>\tau$, every $L\ge4$, every real $\mu$ and every
+$\Omega>0$ there are constants $A_{0}>0$ and $\xi>0$, independent of $L$, $\mu$
+and $\Omega$, such that
+$|\langle\Dop_{x}^{\dagger}\Dop_{y}\rangle|\le A_{0}e^{-d(x,y)/\xi}$ for all
+distinct $x,y\in\Lambda$ and
+$\sup_{L\ge4}\max_{x}\sum_{y}|\langle\Dop_{x}^{\dagger}\Dop_{y}\rangle|<\infty$,
+the expectation being that of $H_{\Lambda}$. For fixed $U>0$, $t\ge0$ and
+$\Omega>0$ with $X=U/\Omega\ge1$, let $\Tcold$ be the infimum of the temperatures
+$\tau$ such that for every $\tau'>\tau$ there are constants $A_{0}>0$ and
+$\xi>2$, independent of $L\ge4$ and $\mu\in\R$, with
+$|\langle\Dop_{x}^{\dagger}\Dop_{y}\rangle_{\cold}|\le A_{0}(d(x,y)+1)^{-\xi}$
+for all distinct $x,y$ and
+$\sup_{L\ge4}\max_{x}\sum_{y}|\langle\Dop_{x}^{\dagger}\Dop_{y}\rangle_{\cold}|<\infty$.
+\end{definition}
+
+Both quantities are upper thresholds for uniform row summability of a single
+two-point function. They say nothing about a phase transition and they are not
+critical temperatures. The definition of $\Tpair$ is the one used in
+\cite{largeu,strong}.
+
+With this notation the released statement is the following, quoted from
+\cite{largeu} in the form in which it is used below.
+
+\begin{theorem}[cold-projected ceiling; \cite{largeu}]
+\label{thm:cold}
+Let $U>0$, $t\ge0$ with $x=t/U\le2^{-14}$, let $X=U/\Omega\ge1$ and
+$M=\lfloor X/64\rfloor$. With $A(\beta)=8\beta U K_{4}(x)e^{-\frac78X}$ and the
+algebraic exponent $\xi_{\cold}(\beta)$ of \cite{largeu}, the cold-state pair
+correlations satisfy
+$|\langle\Dop_{x_{0}}^{\dagger}\Dop_{y_{0}}\rangle_{\cold}|\le(d+1)^{-\xi_{\cold}(\beta)}$
+for all distinct $x_{0},y_{0}$ with $d=d(x_{0},y_{0})\ge1$, on every $L\ge4$ and
+every real $\mu$. If $\tau>2^{26}(t^{2}/U)e^{-\frac78X}$ then
+$\xi_{\cold}(\beta)>2$ and the row sums are bounded uniformly in $L$ and $\mu$.
+Consequently $k_{\mathrm{B}}\Tcold\le2^{26}(t^{2}/U)e^{-7U/(8\Omega)}$.
+\end{theorem}
+
+The lifted statement, which is open, is the same inequality for $\Tpair$ with no
+projection. Writing it out:
+\begin{equation}
+\text{open:}\qquad k_{\mathrm{B}}\Tpair\ \le\ C\,\frac{t^{2}}{U}\,
+e^{-\frac78 X}\quad\text{at fixed }t,U,\ \text{uniformly in }\Omega
+\text{ and }\mu,
+\label{eq:lift}
+\end{equation}
+with $C$ a numerical constant, or the corresponding statement that
+$\Tpair/\Omega\to\infty$ is impossible at strong coupling. Nothing in this note
+decides between them.
+
+\subsection{Three different things that can go wrong}
+
+It is worth separating three mechanisms, because they are commonly conflated and
+because the obstruction appropriate to each is different.
+
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em]
+\item \emph{Thermal.} The cold manifold has exponentially small Gibbs weight at
+fixed temperature, by \cite[Prop.~3]{largeu}: for the atomic reference and
+$\mu=0$ the projected-to-total ratio is
+$[2(1-e^{-\beta\Omega(M+1)})/(2+2e^{-\beta U/2})]^{|\Lambda|}$, which behaves like
+$\exp(-|\Lambda|e^{-\beta\Omega(M+1)})$ at fixed $\beta$. Any argument that
+replaces the Gibbs trace by its restriction to the cold manifold therefore loses
+an amount that is not recoverable site by site.
+\item \emph{Quantum virtual.} Even at $t\to0^{+}$ and at any temperature, virtual
+hopping populates the hot region $N_{z}>M$ with probability of order $(t/U)^{2}$
+per bond, because the displaced oscillators of a virtual pair are centered at
+phonon number of order $X$, far above $M=\lfloor X/64\rfloor$. This is
+algebraically small but not exponentially small in $X$, so no expansion whose
+activities must carry $e^{-cX}$ can be built on the bare frame.
+Section~\ref{sec:vtail} proves this in the bare frame, and shows that the first
+Schrieffer-Wolff rotation of \eqref{eq:S1} does not remove it.
+\item \emph{Neutral history.} Once the electronic history is summed rather than
+upper bounded, the weight of a chronology does not factorize over disjoint time
+segments, and neutral excursions can enhance rather than suppress a charged
+transfer. Section~\ref{sec:kernel} makes this quantitative. A cluster expansion
+on the exact influence functional must resum these neutral histories against the
+true partition function instead of multiplying free kernels.
+\end{enumerate}
+
+The five route families of Section~\ref{sec:routes} fail for reasons (i) and (ii)
+chiefly, with (iii) deciding the fate of the one route that survives them, the
+cutoff-free kernel route of Section~\ref{sec:kernel}.
+
+Section~\ref{sec:routes} records the route-level obstructions,
+Section~\ref{sec:valley} the distortion-coordinate route and its locality step,
+Section~\ref{sec:kernel} the cutoff-free kernel and its conditional-factorization
+failure, Section~\ref{sec:vtail} the virtual-tail lower bounds and the
+Schrieffer-Wolff channel calculation, Section~\ref{sec:cdw} the charge-order
+analogue, and Section~\ref{sec:openproblem} states the remaining open problem,
+together with what is and is not claimed for it.
+
+\section{Five route families and their obstructions}
+\label{sec:routes}
+
+\subsection{What is asserted in this section, and what is not}
+
+Each of the five subsections below describes a family of estimates that has been
+proposed, in one form or another, as a way to pass from Theorem~\ref{thm:cold} to
+\eqref{eq:lift}. What is recorded is the specific inequality within that family
+which fails, and the scale at which it fails. Three kinds of statement appear, and
+they are labelled at each use:
+\begin{itemize}[leftmargin=1.4em]
+\item an \emph{exact identity or inequality}, proved in one line of algebra from
+the definitions of Section~\ref{sec:model};
+\item a \emph{finite witness}, meaning a computation on the specified two-, three-
+or four-site matrix with all electron sectors and a stated phonon cutoff, whose
+parameters are given in the text;
+\item a \emph{scaling statement} about a class of estimates, for instance that a
+bound of a given form can never reach a given size.
+\end{itemize}
+None of these is a theorem about the Gibbs state of $H_{\Lambda}$ in infinite
+volume, and none excludes the existence of some other estimate of the same name;
+it excludes the specified construction. Table~\ref{tab:routes} collects the
+outcome. A sixth route family, written in the distortion coordinate rather than
+in the phonon-number frame, is treated separately in Section~\ref{sec:valley}; it
+does not fail at an estimate of the kind listed here, and it is not in the table.
+
+\begin{table}[t]
+\centering
+\small
+\caption{The five route families, the estimate inside each that fails, and the
+scale of the failure at the stated parameters. Witnesses are finite-matrix
+computations except where marked exact; $X=U/\Omega$ and $x=t/U$.}
+\label{tab:routes}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}p{5.0cm}>{\raggedright\arraybackslash}p{7.0cm}@{}}
+\toprule
+Route & Estimate that fails & Scale of the failure \\
+\midrule
+(a) operator
+Schrieffer-Wolff, phonon-number Lyapunov & exponential moment
+$\langle e^{sN_{z}}\rangle\le K(s)$ uniformly in $X$ &
+virtual cloud of weight $\Theta(x^{2})$ at $N_{z}\sim X$; exact resonance
+$U+\Omega(m-n)=0$; one-sided rotation gives
+$\langle e^{N/4}\rangle=1.7\times10^{14}$ at $X=128$ \\
+(b) Lang-Firsov path integral, Gaussian domination & $0\le e^{-\Phi_{\beta}}\le1$
+used to discard the influence action &
+the discarded action is the whole $\Omega$ dependence: exact attractive Hubbard
+pair splitting $5.612$ at $U=40$, $t=8$, against a Holstein tunnel gap that is
+already below double-precision resolution \\
+(c) reflection positivity in the
+phonon coordinate & chessboard bound on displaced configurations &
+neither the direct nor the particle-hole reflection kernel is positive on
+$C_{4}$: $\lambda_{\min}=-2.03\times10^{6}$ and $-4.6\times10^{3}$ at $t=1$,
+$\beta=2$ \\
+(d) Brascamp-Lieb, log-concavity of the phonon marginal & convexity
+$V_{\mathrm{eff}}''\ge1/U$ &
+$V_{\mathrm{eff}}''(0)=1/U-1/(2\tau)=-0.475$ at $U=40$, $\tau=1$: exact \\
+(e) cut Schrieffer-Wolff without the global projection & hot bonds carry the
+unrotated hopping $2t$ &
+Dyson gain $e^{2t\beta}$ against penalty $e^{-X/64}$ crosses at
+$x=1/128$: heuristic norm comparison \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Route (a): operator Schrieffer-Wolff and phonon-number Lyapunov
+functions}\label{sub:routea}
+
+The proposal is to work on the full Fock space, throw away the projector
+$P_{\cold}$ of \eqref{eq:pcold}, and replace it by a positive weight that grows
+with phonon number: find $\varphi:\N\to[0,\infty)$ increasing, with
+$\sum_{n}e^{-\varphi(n)}<\infty$, such that the Gibbs weight of a history which
+visits phonon number $n$ is bounded by $e^{-\varphi(n)}$ times its bare hopping
+weight, uniformly in $X$. Equivalently one wants an exponential moment bound
+$\langle e^{sN_{z}}\rangle\le K(s)$ with $K$ independent of $X$, together with a
+high-temperature or low-temperature splitting of the resulting inequality. The
+energy of the atomic oscillator, displaced by $\alpha^{2}=X/2$ per occupied
+neighbour direction, is what would supply $\varphi$.
+
+Three separate things go wrong.
+
+\emph{Wrong-sign tilting.} The natural object in this programme is the tilted
+partition function $\Tr e^{-\beta H+sN}$, and Golden-Thompson gives
+\begin{equation}
+\Tr\bigl(e^{-\beta H+sN}\bigr)\le\Tr\bigl(e^{-\beta H}e^{sN}\bigr),
+\label{eq:gt}
+\end{equation}
+which bounds the tilted partition function \emph{by} the moment one wants, not
+the other way round. Relation \eqref{eq:gt} is exact for all $\beta,s$; the
+inequality cannot be reversed, and Bogoliubov's inequality controls
+$\langle H_{\mathrm{int}}\rangle$, not $\langle e^{sN}\rangle$.
+
+\emph{Virtual cloud.} In the bare Lang-Firsov frame the first-order virtual
+transfer of a doublon across a bond reaches phonon number of order
+$\alpha^{2}=X/2$ on each endpoint with the Franck-Condon weight
+\begin{equation}
+w_{M}=t^{2}\sum_{n_{z}>M,\,n_{w}\ge0}\frac{e^{-2\alpha^{2}}\alpha^{2(n_{z}+n_{w})}}
+{n_{z}!\,n_{w}!\,\bigl[U+\Omega(n_{z}+n_{w})\bigr]^{2}}
+\;\xrightarrow[\Omega/U\to0]{}\;\frac{t^{2}}{4U^{2}} .
+\label{eq:wM}
+\end{equation}
+The limit in \eqref{eq:wM} is a Poisson concentration statement for total mean
+$2\alpha^{2}=X$ concentrated at $X$, and it is an identity at leading order in
+$\Omega/U$. Consequently the exact ground-state expectations of a two-site dimer
+at $U=40$, as $X$ varies from $10$ to $60$ with $t=8$, are
+\begin{equation}
+\langle n_{\mathrm{rel}}\rangle_{\mathrm{GS}}\approx0.195,\ 0.395,\ 0.795,\ 1.195,
+\qquad
+\langle e^{n_{\mathrm{rel}}/4}\rangle_{\mathrm{GS}}\approx4.47,\ 2.0\times10^{5},\
+9.5\times10^{14},\ 4.61\times10^{24},
+\label{eq:moments}
+\end{equation}
+the last value taken at a phonon cutoff large enough that the maximum of the
+distribution lies inside the truncated space. The first moment agrees with second
+order perturbation theory, $\langle n_{\mathrm{rel}}\rangle=\frac{t^{2}}{2U^{2}}X$,
+to three digits at every $X$; the exponential moment is the quantity that a
+Lyapunov function would have to control, and it grows by twenty orders of
+magnitude over the same range.
+
+The two requirements on $\varphi$ clash. To dominate the cloud at $n\sim X$ one
+needs $e^{-\varphi(X)}\gtrsim x^{2}$, that is $\varphi(X)\lesssim2\ln(1/x)$, a
+bound of order $\ln X$ that does not grow with $X$; to be increasing and
+summable one needs $\varphi$ unbounded in $n$; and the observed moment growth in
+\eqref{eq:moments} shows that no exponential moment $\langle e^{sN_{z}}\rangle$
+with $s>0$ is bounded uniformly in $X$. A Lyapunov function cannot do both jobs.
+
+\emph{Resonance and one-sided rotation.} The first-order generator
+\eqref{eq:S1} has denominators $U+\Omega(m-n)$, where $n$ is the pair-sector
+phonon number and $m$ the odd-sector one. On the full Fock space these vanish
+exactly whenever $n-m=X$, which for integer $X$ has infinitely many solutions
+$(n,m)\in\N^{2}$; $S_{1}$ is then undefined and no full-space Schrieffer-Wolff rotation
+exists without further input. Restricting $S_{1}$ to the cold manifold, as in
+\eqref{eq:S1}, leaves the states $|1,1;m\rangle$ with $m>M$ unrotated, so
+\eqref{eq:wM} is untouched at $T=0$. A one-sided rotation that acts with the cold
+projector on one endpoint only is well defined, since $U-\Omega M>0$, and it does
+reduce the zero-temperature hot weight to $O(x^{4})$. It does not survive
+$\tau\sim\Omega$: at $X=128$, $M=2$, $x=1/128$ and $\beta\Omega=1$, the
+thermally populated states $|2,0;M+1\rangle$ are unrotated and hop to $m\sim X$,
+producing $\langle e^{n_{\mathrm{rel}}/4}\rangle=1.69\times10^{14}$ at a phonon
+cutoff inside which the maximum of the distribution is resolved, that is three
+times the value obtained when the cutoff clips the maximum. Both numbers are far
+outside anything an activity bound could tolerate.
+
+\subsection{Route (b): Gaussian domination of the Lang-Firsov influence
+functional}\label{sub:routeb}
+
+The proposal is to write the pair correlation as a Feynman-Kac worldline sum
+with the influence action $\Phi_{\beta}[q]\ge0$ of
+\eqref{eq:Phi} and to use Gaussian domination, that is
+$0\le e^{-\Phi_{\beta}[q]}\le1$, to move the action into a comparison measure.
+Two things are lost, and both are fatal.
+
+\emph{All of $\Omega$.} Setting $e^{-\Phi_{\beta}}\equiv1$ reduces the worldline
+weight to an instantaneous attractive Hubbard model, in which $U$ survives and
+$\Omega$ does not appear. On the dimer with $U=40$, $t=8$, the attractive Hubbard
+pair splitting is the exact $(\sqrt{U^{2}+16t^{2}}-U)/2=5.612$, while the Holstein
+tunnel gap of the same dimer is of order $(t^{2}/U)e^{-cX}$ at $X=40$, below the
+resolution of double precision; the comparison therefore discards exactly the
+factor that produces \eqref{eq:coldceiling}.
+
+\emph{Short loops.} Keeping $\Phi_{\beta}$, the two simplest virtual excursions
+rescaled to the same duration have actions that differ by a factor four, and one
+of them is small. A pair excursion $(2,0)\to(0,2)\to(2,0)$, that is
+$\Delta n=\pm2$ on each endpoint, of duration $\delta=1/U$ at $U=40$, $\Omega=1$,
+$\beta=1$ costs $\Phi_{\beta}^{(2\text{-site})}(1/U)=3.892$, and the same
+excursion across a thermal time $\delta=\beta/2$ costs $39.187$, asymptotic to
+$4U\delta$. A neutral excursion $(2,0)\to(1,1)\to(2,0)$, that is
+$\Delta n=\pm1$, costs exactly a quarter of those values, $0.973$ and $9.797$,
+asymptotic to $U\delta$. Either way the action of a short excursion is $O(1)$ in
+$X$ rather than $O(X)$, so it is not suppressed at strong coupling on the scale
+that $\Phi_{\beta}$ would have to supply, and the equal-time pair correlation in
+the physical frame stays $\Theta(x^{2})$: at $X=40$ on the dimer it is $0.0104$ at
+$\tau=\Omega$, $0.0107$ at $\tau=t^{2}/U$ and $0.0102$ at $\tau=10^{-4}$,
+remaining of order $x^{2}=0.04$ rather than decaying like $e^{-cX}$.
+
+The route's useful residue is the directed kernel of
+Section~\ref{sec:kernel}: the single factor $F_{+}$, which separates a charged
+transfer from a neutral excursion, does carry the exponent, but it carries it for
+one isolated hop and not for a worldline.
+
+\subsection{Route (c): reflection positivity in the phonon coordinate}\label{sub:routec}
+
+Since \eqref{eq:H} is stoquastic in the position basis, so that
+$Z_{\mathrm{el}}(x)>0$ for every configuration $x$, one would like a chessboard
+estimate: reflection positivity of the static kernel
+$M_{ij}=Z_{\mathrm{el}}(x_{i},\theta x_{j})$ under a spatial reflection $\theta$,
+which would bound the weight of large displacements $|x_{z}|>x_{0}$ uniformly in
+volume. Reflection positivity is a strong tool of exactly this shape in spin
+systems \cite{dls}, and it is the mechanism behind the released two-dimensional
+bounds.
+
+It fails here, already on the smallest two-dimensional torus. On $C_{4}$, the
+$2\times2$ square with $t=1$, $\beta=2$ and the static field $b_{z}$ applied
+directly at $g=2$, the reflection kernels for the four available symmetries have
+smallest eigenvalues
+\begin{equation}
+\begin{aligned}
+&\text{direct, edge bisecting:} && -2.028\times10^{6},\\
+&\text{particle-hole, edge bisecting:} && -4631.7,\\
+&\text{site centred:} && -3.776\times10^{5},\ -4.022\times10^{7}.
+\end{aligned}
+\label{eq:rp}
+\end{equation}
+The particle-hole kernel is positive semidefinite on the dimer,
+$\lambda_{\min}=+0.0409$, so the failure is genuinely two dimensional and not a
+normalization artifact: on $C_{4}$ the two halves are joined by two parallel
+edges, and the worldline trace across two shared bonds does not factor as
+$\Tr(K_{i}K_{j}^{\dagger})$ with a definite sign. Reflection positivity is
+therefore not available as the volume-uniform mechanism in the Holstein
+coordinate, and the route has no replacement for it.
+
+\subsection{Route (d): Brascamp-Lieb and log-concavity of the phonon marginal}\label{sub:routed}
+
+A second volume-uniform mechanism would be a Brascamp-Lieb variance bound, for
+instance $\operatorname{Var}(b_{z})\le U\tau$ for the local field
+$b_{z}$ conjugate to the displacement, provided a convexity estimate
+$\nabla^{2}V_{\mathrm{eff}}\ge1/U$ holds on the phonon marginal. Conditional on a
+fixed electronic occupation path the phonon action is exactly quadratic: in the
+energy-scaled coordinate $b_{z}=\sqrt{U\Omega/2}\,(a_{z}+a_{z}^{\dagger})$, whose
+bare potential is $b_{z}^{2}/(2U)$, the field is a Gaussian centred at the shifted
+mean $U(n_{z}-1)$ with the occupation-independent quantum variance
+$\frac{U\Omega}{2}\coth(\beta\Omega/2)$, whose static limit at $\beta\Omega\ll1$
+is $U\tau$. That variance controls fluctuations around the shifted mean; it
+gives no information about the occupation $n_{z}$ and hence none about the phonon
+number in the bare frame, which is the only quantity that enters $P_{\cold}$.
+
+Integrating the electrons out destroys the convexity. On one static site at
+$U=40$, $\tau=1$,
+\begin{equation}
+V_{\mathrm{eff}}(b)=\frac{b^{2}}{2U}-2\tau\ln\Bigl(2\cosh\frac{\beta b}{2}\Bigr),
+\qquad V_{\mathrm{eff}}''(0)=\frac1U-\frac{1}{2\tau}=-0.475<0
+\quad\text{for all }\tau<U/2,
+\label{eq:veff}
+\end{equation}
+with symmetric wells at $b\approx\pm U$ and, at $\tilde\mu=0$,
+\begin{equation}
+\operatorname{Var}(b)=\frac{U}{\beta}+\frac{U^{2}}{1+e^{-\beta U/2}}
+=40+\frac{1600}{1+e^{-20}}=1639.9999967>U\tau,
+\label{eq:varb}
+\end{equation}
+which is larger than the static value $U\tau$ by $U^{2}/(1+e^{-\beta U/2})$: exact
+algebra followed by one-site arithmetic. On the dimer at $t=1$, $U=40$, $\tau=1$
+both directional second derivatives at the origin are negative, with closed forms
+$\frac1U-\frac{\tanh(\beta t/2)}{t}=-0.437117$ in the antisymmetric direction and
+$\frac1U-\frac{\beta}{2\cosh^{2}(\beta t/2)}=-0.368224$ in the symmetric one; at
+$t=4$ the same two closed forms give $-0.216007$ and $-0.010325$. The two wells are the
+double occupancy and the empty site, that is precisely the electronic sector the
+cold manifold was designed to remove, and no convexity estimate survives in its
+presence.
+
+\subsection{Route (e): cut Schrieffer-Wolff without the global projection}\label{sub:routee}
+
+The last family keeps the algebraic structure of the cold-projected proof and
+replaces the global projector by an edge-local one: on a bond whose endpoints are
+cold, apply $S_{1,e}$; on other bonds, leave the hopping alone, and control the
+difference by a Boltzmann penalty for the hot endpoint.
+
+Three scales defeat it. First, a hot bond keeps $\|V_{e}\|_{\mathrm{op}}=2t$
+unrotated, so a Dyson expansion on such a bond gains $e^{2t\beta}=e^{2xX}$ against
+the penalty $e^{-M}\approx e^{-X/64}$, and the two exponents cross where
+\begin{equation}
+2x>\tfrac1{64}\quad\Longleftrightarrow\quad x>\tfrac1{128}.
+\label{eq:threshold}
+\end{equation}
+This is a heuristic comparison of norms rather than a proof of defeat. For every
+$X$ the gain beats the penalty once $x>1/128$, so at moderate $x$ the naive bound
+cannot control hot bonds; for $x\le1/128$ the penalty beats the gain, and this
+comparison by itself obstructs nothing. Since Theorem~\ref{thm:cold} needs
+$x\le2^{-14}$, far below the crossing point, the obstruction inside the
+cold-projected regime is carried by the two mechanisms that follow, neither of
+which is a comparison of norms against the Boltzmann penalty. Second, one
+application of the cut generator leaves a
+residual coupling between the cold sector and the hot pair sector of norm
+$\Theta(x^{2}U)$: on the dimer the one-step residual is $0.4637$ while
+$t^{2}/U=0.4$, so no $e^{-cX}$ factor appears at this order. Third, on a three-site
+chain with $U=40$, $\Omega=10$, $t=4$, $M=1$, the two edge generators cancel the
+cold-to-cold-odd block to within double-precision roundoff but generate the
+cross-commutator
+$[S_{01},V_{12}]+[S_{12},V_{01}]$ with norm $0.984$ into the odd sector and
+$0.534$ directly into $n_{2}>2M$. Cross-commutators are unavoidable whenever hot
+sites are left unrotated, and they carry no exponential smallness.
+
+\subsection{What survives: a volume-uniform single-site bound}
+
+One positive statement of this family survives, and it is worth stating
+carefully, because it is the only mechanism in this section that is uniform in
+the volume without a projection. It is an entropy-energy bound, and it is
+insufficient for a reason of size rather than of principle.
+
+\begin{lemma}[single-site hot weight in the bare Lang-Firsov frame]
+\label{lem:relent}
+Let $\Lambda$ be a finite graph with $z$ of degree $d$, let $H_{\LF}$ be
+\eqref{eq:HLF} and let $\rho_{\LF}=e^{-\beta H_{\LF}}/\Tr e^{-\beta H_{\LF}}$.
+Split $H_{\LF}=H^{(z)}+V_{z}$, where $H^{(z)}$ omits the bonds incident to $z$.
+Then $\|V_{z}\|\le 2dt$ and, for every $\beta>0$, $M\ge0$ and real $\mu$,
+\begin{equation}
+\bigl\langle\mathbf{1}_{\{N_{z}>M\}}\bigr\rangle_{\LF}
+\le\min\Bigl\{1,\ \frac{2\|V_{z}\|+\tau\log2}{\Omega(M+1)}\Bigr\}
+\le\min\Bigl\{1,\ \frac{4dt+\tau\log2}{\Omega(M+1)}\Bigr\}.
+\label{eq:relent-bound}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+For each edge $e=\{z,w\}$ and spin $\sigma$, the operator
+$c_{z\sigma}^{\dagger}c_{w\sigma}D_{z}(-\alpha)D_{w}(\alpha)+\mathrm{h.c.}$ has
+norm $1$ because the displacements are unitary, so $\|V_{e}\|\le2t$ and
+$\|V_{z}\|\le2dt$. Write $V=V_{z}$, $H=H_{\LF}$, $H_{\sigma}=H^{(z)}$, and let
+$\rho_{\sigma}$ be the Gibbs state of $H_{\sigma}$. Expanding
+$D(\rho\|\rho_{\sigma})=\Tr\bigl(\rho(\ln\rho-\ln\rho_{\sigma})\bigr)$ and using
+$H-H_{\sigma}=V$ gives the exact identity
+\begin{equation}
+D(\rho\|\rho_{\sigma})=\ln Z_{\sigma}-\ln Z_{H}-\beta\Tr(\rho V)\le2\beta\|V\|,
+\end{equation}
+where $\ln Z_{\sigma}-\ln Z_{H}\le\beta\|V\|$ follows from
+$H_{\sigma}\ge H-\|V\|$ and monotonicity of $A\mapsto\Tr e^{-A}$, and $-\Tr(\rho V)\le\|V\|$. Put
+$p=\langle\mathbf{1}_{\{N_{z}>M\}}\rangle_{\LF}$ and
+$q=\langle\mathbf{1}_{\{N_{z}>M\}}\rangle_{\sigma}$. Because $H^{(z)}$ omits all
+bonds incident to $z$, the oscillator at $z$ decouples as a free harmonic
+oscillator under $\rho_{\sigma}$, so the geometric sum gives
+$q=e^{-\beta\Omega(M+1)}$. The binary relative entropy satisfies
+$d(p\|q)=-h_{2}(p)+p\ln(1/q)+(1-p)\ln\bigl(1/(1-q)\bigr)\ge p\ln(1/q)-\ln2
+=p\beta\Omega(M+1)-\ln2$, since $h_{2}(p)\le\ln2$ and $\ln(1/(1-q))\ge0$. By
+monotonicity of relative entropy under the two-outcome measurement
+$\{\mathbf{1}_{\{N_{z}>M\}},\mathbf{1}_{\{N_{z}\le M\}}\}$ \cite{ohya},
+$d(p\|q)\le D(\rho\|\rho_{\sigma})$. Combining gives
+$p\beta\Omega(M+1)\le2\beta\|V\|+\ln2$, which is \eqref{eq:relent-bound}.
+\end{proof}
+
+The bound is uniform in $|\Lambda|$ and in $\mu$. Its two regimes should be
+distinguished, because one of them is empty of information. When $M$ is small,
+specifically when $\Omega(M+1)\le2\|V_{z}\|+\tau\log2$, the right side of
+\eqref{eq:relent-bound} exceeds one, the minimum returns the trivial bound $p\le1$, and
+no finite-$M$ numerical check can certify anything. A check at $M=2$, $X=128$ on
+the dimer falls in that regime and must not be quoted as evidence. An informative
+check needs the opposite comparison, and one exists at strong coupling: on the
+two-mode Lang-Firsov dimer with $U=16$, $\Omega=1$, $t=1/4$, $M=1$, $\tau=1$ and a
+phonon space cut at $N_{\mathrm{ph}}=18$, where $J_{0}=\lVert V_{0}\rVert_{\mathrm{op}}=2t=1/2$,
+one finds $\langle\mathbf{1}_{\{N_{0}>1\}}\rangle_{\LF}=0.135477$ against the
+strictly smaller-than-one bound $(2J_{0}+\tau\log2)/(\Omega(M+1))=0.846574$.
+In general \eqref{eq:relent-bound} is informative only once $M$ exceeds
+$(2\|V_{z}\|+\tau\log2)/\Omega-1$, and even there it is linear in $1/M$. Its
+content for the lift is therefore nil, because it does not decay in $X$: at
+$M\simeq X/64$ the right side of \eqref{eq:relent-bound} is $\Theta(64d\,x)$, and
+$\Theta(\tau/U)$ at high temperature, independently of how large $X$ is. What a polymer or contour expansion on the
+full Gibbs state needs is an activity for a hot bond that is exponentially small
+in $X$, so that the hot sector can be removed from the long-distance asymptotics
+at a cost that beats any volume factor. Lemma~\ref{lem:relent} supplies none. It
+also gives only an upper bound on the probability and no information about the
+influence of a hot region on a pair that propagates at distance $d\to\infty$,
+which is the quantity that actually enters a ceiling. Section~\ref{sec:vtail}
+shows that no argument of this type can be tightened into an exponential bound in
+the bare frame, because the hot weight is bounded \emph{below} by
+$\Theta(x^{2})$ at every temperature.
+
+\section{The distortion-valley route: lifting the projection on the dimer and
+stopping at locality}
+\label{sec:valley}
+
+The five routes of Section~\ref{sec:routes} all work inside the phonon-number
+frame, where the cold projection $P_{\cold}$ is the price of a convergent
+expansion. A sixth route abandons that frame. It treats the static distortion as
+the coordinate, in which the two configurations of a bond are two wells of a
+Born-Oppenheimer surface separated by an explicit barrier, and the tunnelling
+amplitude between them is exponentially small in $U/\Omega$ already at the level
+of the two-site operator. On the dimer the projection can then be dropped without
+compensation. This section records what that route proves and where it stops. It
+is the only route in this note that produces a bound of the released form without
+the cold manifold, and it is included for that reason. Its stopping point turns
+out to be a locality statement of the same shape as Section~\ref{sec:openproblem}.
+
+\subsection{Distortion coordinates and the dimer surface}
+
+Under $U=2g^{2}/\Omega$, $g=\sqrt{U\Omega/2}$, the unitary change of variable
+$v_{x}=\pm\sqrt{U\Omega/2}\,(a_{x}+a_{x}^{\dagger})$ maps the spinful Hamiltonian
+of Section~\ref{sec:model} to
+\begin{equation}
+H_{\Lambda}
+=-\frac{U\Omega^{2}}{2}\sum_{x\in\Lambda}\partial_{v_{x}}^{2}
++\sum_{x\in\Lambda}\frac{v_{x}^{2}}{2U}+H_{\mathrm{el}}(v)
+-\frac{\Omega|\Lambda|}{2},
+\label{eq:distortion}
+\end{equation}
+with $[v_{x},\partial_{v_{x}}]=-1$ and $H_{\mathrm{el}}(v)$ the electronic
+Hamiltonian at frozen distortion $v$. This is the standard Holstein change of
+variables \cite{holstein1959,langfirsov} and is used here only as a rewritten
+frame; every statement below is about \eqref{eq:distortion} with the phonons kept
+in the algebra.
+
+On the dimer, with $c=(v_{1}+v_{2})/2$ and $r=(v_{1}-v_{2})/2$, the
+centre-of-mass coordinate decouples as a free oscillator and the relative
+coordinate carries a three-channel electronic matrix. In the spin-triplet sector
+the electronic energy vanishes and the potential is $r^{2}/U$. In the singlet
+sector, in the diabatic basis $\{|2,0\rangle,|1,1\rangle,|0,2\rangle\}$, the
+matrix has eigenvalues $\{-2\sqrt{r^{2}+t^{2}},\,0,\,+2\sqrt{r^{2}+t^{2}}\}$ and
+the lowest sheet is
+\begin{equation}
+V_{-}(r)=\frac{r^{2}}{U}-2\sqrt{r^{2}+t^{2}} .
+\label{eq:vminus}
+\end{equation}
+For $U>t$ it has symmetric minima at $r=\pm r_{0}=\pm\sqrt{U^{2}-t^{2}}$ of depth
+$V_{\min}=-U-t^{2}/U$, against a single-polaron minimum of $-U/2-t^{2}/U$ for
+$U>2t$ (and $-U/4-t$ for $t<U\le2t$), so the two-site singlet is the ground
+sector and is separated from the single-polaron sector by $U/2$; the well has
+frequency
+$\Omega_{\mathrm{eff}}=\Omega\sqrt{1-(t/U)^{2}}$, and the barrier between them is
+exactly $B_{\mathrm{dimer}}=(U-t)^{2}/U$. The distortion picture thus converts an
+$X$-dependent phonon-number bookkeeping problem into a double-well splitting
+problem with a barrier linear in $U$ and a frequency $\Omega$: the exponent that
+appears naturally is $U/\Omega$ itself, which is what the cold projection was
+patching.
+
+\subsection{Non-asymptotic splitting and excursion bounds}
+
+The following three statements hold for the full $3\times3$ matrix operator
+\eqref{eq:vminus} on $L^{2}(\mathbb{R})\otimes\mathbb{C}^{3}$, with no adiabatic
+approximation and no truncation of the electronic sector. They are proved with
+matrix Agmon estimates, a constant-spinor trial state, a global quadratic lower
+bound on $V_{-}-V_{\min}$, parity pigeonholing and a Dirichlet-Neumann min-max
+argument. The double-well tunnelling framework is classical
+\cite{simon1984,hs1984,harrell1980,martinez1989,kmsm1992}; what is added here is a
+non-asymptotic form with explicit constants in the Holstein parameters.
+
+\begin{theorem}[ground doublet]\label{thm:valleyground}
+Let $x=t/U\in(0,1/4]$, $X=U/\Omega$, and
+\begin{equation}
+X_{0}(x)=\max\Bigl\{\frac{8}{(1-x)^{2}},\
+\frac{4}{s_{*}(1/8)^{2}},\
+\frac{64(1-x)^{2}}{c_{\mathrm{WKB}}(x,1/8)^{2}}\Bigr\}\le31 ,
+\label{eq:X0}
+\end{equation}
+with $s_{*}$ the Agmon parameter and $c_{\mathrm{WKB}}$ the classical
+instanton normal form. Then for all $X\ge X_{0}(x)$,
+\begin{equation}
+E_{1}-E_{0}\le U\exp\bigl(-c_{0}(x)X\bigr),\qquad
+c_{0}(x)=\tfrac12\,c_{\mathrm{WKB}}\bigl(x,\tfrac18\bigr)\ge0.655327 .
+\label{eq:valleyground}
+\end{equation}
+As $X\to\infty$ at fixed $x$ the sharp exponent
+$c_{\mathrm{WKB}}(x,0)$ is attained up to $O(X^{-1/4})$.
+\end{theorem}
+
+\begin{theorem}[all sub-barrier doublets]\label{thm:valleydoublets}
+Fix $\kappa\in[0,1)$ and $x=t/U\in(0,1/4]$, and let $k\ge0$ obey
+$E_{2k}\le V_{\min}+\kappa B_{\mathrm{dimer}}$ and $k+1\le11X$. Then for
+$X\ge X_{0}(x,\kappa)$,
+\begin{equation}
+E_{2k+1}-E_{2k}\le C(x,\kappa)\,U\,\exp\bigl(-c(x,\kappa)X\bigr),\qquad
+c(x,\kappa)=\tfrac12\,c_{\mathrm{WKB}}\Bigl(x,\tfrac{1+\kappa}{2}\Bigr),
+\label{eq:valleydoublets}
+\end{equation}
+with the prefactor
+\begin{equation}
+C(x,\kappa)=\frac{160}{e\,c_{\mathrm{WKB}}\bigl(x,\tfrac{1+\kappa}{2}\bigr)}\,
+\frac{352}{7(1-\kappa)(1-x)^{2}}.
+\label{eq:valleyC}
+\end{equation}
+\end{theorem}
+
+The exponent in \eqref{eq:valleydoublets} is the same matrix Agmon estimate as in
+the ground case; what needs care is the eigenvalue count that fixes the prefactor.
+Half-line Neumann bracketing at the barrier top does not supply it, for two
+reasons: the electronic sector carries multiplicity three, so six states sit at
+each Neumann level, and the half-line Neumann oscillator displaced from the origin
+has low eigenvalues strictly below the full-line levels $1,3,5,\dots$. A
+Golden-Thompson trace bound combined with Markov's inequality does supply it, in
+the form
+\begin{equation}
+2k+1\le\frac{6}{\beta\Omega}\sqrt{\frac{1+x}{1-x}}\,
+e^{\beta(\kappa B_{\mathrm{dimer}}+\Omega/2)},
+\label{eq:count}
+\end{equation}
+and at $\beta=(\kappa B_{\mathrm{dimer}}+\Omega/2)^{-1}$ this gives $k+1\le11X$,
+which is the count entering \eqref{eq:valleydoublets}. The prefactor is larger
+than a counting argument tuned to the lowest pair would suggest, and it is stated
+rather than optimized.
+
+The all-temperature statement is the one that matters for a lift, because the
+target strip is $T\ge A\Omega$ and a bound that degrades at $T\gtrsim\Omega$ would
+be useless there.
+
+\begin{theorem}[excursions at every temperature]\label{thm:valleyexcursion}
+For every $\beta>0$, including $\beta\Omega\lesssim1$, and every
+$\kappa\in(0,1)$,
+\begin{equation}
+\mathbb{P}_{\beta}\bigl(H_{r}>V_{\min}+\kappa B_{\mathrm{dimer}}\ \text{or}\
+S=1\bigr)
+\le\inf_{\gamma\in(0,1)}\frac{6}{\gamma}\sqrt{\frac{1+x}{1-x}}\,
+e^{-\beta(1-\gamma)\kappa B_{\mathrm{dimer}}+\frac12\beta\gamma\Omega}
++3\,e^{-\beta(U+t^{2}/U)} .
+\label{eq:valleyexcursion}
+\end{equation}
+In the same regime the pair-transfer overlap between any two sub-barrier
+eigenstates decays as $O(e^{-c(x,\kappa)X})$ with no non-degeneracy assumption,
+for cutoffs in $C^{2}(\mathbb{R};[0,1])$ the wall commutator obeys
+$\|[H_{r},\chi_{R}]\psi_{k}\|_{L^{2}}\le C'_{\mathrm{com}}(x,\kappa)U\,
+e^{-c(x,\kappa)X/2}$, the half exponent being the square root of the Agmon bound
+on each local integral that enters it,
+and crossing a single valley wall costs at least
+$\beta(1-\gamma)\kappa B_{\mathrm{dimer}}$, that is $\Theta(\beta U)$, not
+$\Theta(\beta\Omega)$.
+\end{theorem}
+
+The mechanism behind \eqref{eq:valleyexcursion} is an exact cancellation. The
+Golden-Thompson upper bound on the relative partition function and the
+constant-spinor lower bound both carry a factor $1/(\beta\Omega)$ from the
+transverse oscillator, and the two cancel identically rather than being
+controlled. This is precisely the $\beta\Omega$ bookkeeping that fails in the
+phonon-number frame.
+
+\subsection{The many-body barrier does not soften}
+
+The step from the dimer to the lattice is a tensorization statement for the
+Born-Oppenheimer potential
+$V_{\mathrm{BO}}(v)=\sum_{x}v_{x}^{2}/(2U)-\operatorname{Tr}|h_{v}|-\mu|\Lambda|$.
+It is the point at which one might fear that a collective distortion lowers the
+barrier far below its dimer value, as it would for a soft mode. It does not.
+
+\begin{theorem}[barrier tensorization]\label{thm:valleytensor}
+Let $G=(\Lambda,E)$ have maximum degree $\le2d$ and let $\mu\in\mathbb{R}$. For
+any $B\subset\Lambda$ and any distortion $v'$ with $v'=v$ on $B^{c}$ and
+$|v'_{x}|=U$ on $B$,
+\begin{equation}
+V_{\mathrm{BO}}(v)-V_{\mathrm{BO}}(v')
+\ge\sum_{x\in B}\Bigl[\frac{(U-|v_{x}|)^{2}}{2U}-4dt\Bigr].
+\label{eq:valleytensor}
+\end{equation}
+\end{theorem}
+
+The proof is a pinching inequality with the pinching family
+$\{P_{B^{c}}\}\cup\{|x\rangle\langle x|\}_{x\in B}$, followed by a trace-norm
+bound of $2t$ per edge through $\partial B$ and by the cancellation of the
+unaffected electronic trace. Three consequences are worth separating. The per-site
+barrier is at least $U/2-4dt$ for all $|v_{x}|\le U/2$, uniformly in the volume
+and in $\mu$, so no collective path beats the dimer scale by more than the
+coordination term. The statement is at the level of the potential, hence also at
+the level of the quantum operator through the same inequality in quadratic form.
+And the cold manifold never appears, so the route is not subject to the
+counterexample of Section~\ref{sec:kernel}.
+
+\subsection{Lang-Firsov against the Born-Oppenheimer exponent}
+
+The distortion route predicts a splitting exponent set by the vibration barrier,
+$c_{\mathrm{WKB}}(x,0)=2\sqrt{1-x^{2}}-2x^{2}\ln\frac{1+\sqrt{1-x^{2}}}{x}\in
+[1.67856,\,2)$ for $x\in(0,1/4]$, while second-order Lang-Firsov polaron hopping
+predicts
+\begin{equation}
+\Delta E_{\mathrm{LF}}^{(2)}\sim4\sqrt{\frac{\pi}{2U\Omega}}\,t^{2}\,
+e^{-2U/\Omega},
+\label{eq:lf2}
+\end{equation}
+that is $c_{\mathrm{LF}}=2$ with a $\sqrt{U/\Omega}$ prefactor and no barrier
+correction, the standard small-polaron and bipolaron result
+\cite{langfirsov,devreese2009}. The two exponents coincide only as $x\to0$. Exact oscillator-basis
+diagonalization of the dimer agrees with \eqref{eq:lf2} in the antiadiabatic
+regime $t^{2}/(U\Omega)\ll1$, where the ratio runs from $1.0007$ to $1.022$ over
+$t\in[0.02,0.25]$ at $X=10$, and exceeds it once the adiabatic ratio
+$t^{2}/(U\Omega)\gtrsim1$ sets in, reaching $7.658$ at $t/U=1/4$. The
+Born-Oppenheimer exponent is the smaller of the two everywhere on $(0,1/4]$, which
+is the correct qualitative ordering: the tunnelling particle is the distortion,
+and the Lang-Firsov cloud is its large-$X$ limit.
+
+\subsection{Where the route stops: locality in the distortion coordinate}
+
+With Theorems~\ref{thm:valleyground}--\ref{thm:valleytensor} the dimer has a
+splitting bound without the cold projection, and the lattice barrier cannot be
+lowered collectively. The obstruction appears one step later and consists of three
+interlocking facts.
+
+First, the thermal energy is extensive. At temperature $T\ge A\Omega$ one has
+$\langle H_{\Lambda}-E_{0}\rangle_{\beta}=\Theta(|\Lambda|A\Omega)$, which exceeds
+$B_{\mathrm{dimer}}$ by a factor of order $|\Lambda|$; a global spectral
+projection $\mathbf{1}_{\{H_{\Lambda}\le E_{0}+\kappa B\}}$ therefore carries
+Gibbs weight $e^{-\Omega(|\Lambda|)}$ at strong coupling, and the dimer argument,
+which uses exactly such a projection on $H_{r}$, has no lattice analogue.
+
+Second, the local valley projectors do not commute with the boundary hopping. The
+singlet weight $|1,1\rangle$ is $\Theta(t/U)$ at every distortion, and the local
+phonon number is $\Theta(T/\Omega)=\Theta(A)$ in the target strip, so a local
+projection onto the lower sheet leaks at first order in $t^{2}/U$ and not at
+$e^{-cX}$. A finite witness makes this concrete: on the three-site $N=2$, $S=0$
+electronic Hamiltonian at frozen distortion $v=(-U,+U,+U)$ with $U=20$, $t=2$, the
+leakage of the neighbouring bond through the local ground-state projector is
+\begin{equation}
+\bigl\|(I-P_{01})V_{12}|\psi_{0}\rangle\bigr\|=0.1408944 ,
+\label{eq:leak}
+\end{equation}
+close to $\sqrt{2}\,t^{2}/(2U)=0.14142$, and it is a power of $t$ rather than an
+exponential in $X$. This is a fixed-distortion electronic witness, not a
+three-site electron-phonon diagonalization; what it shows is that the projector
+leakage inside a well is of the same order as the intra-well hopping that any
+Schrieffer-Wolff step must resum, and there is no small parameter to resum in once
+$\beta t^{2}/U\gg1$.
+
+Third, inside a fixed valley the fermions remain dynamical. At $T\ge A\Omega$ and
+$\Omega\le ct$ the neutral intra-valley amplitude obeys $\beta t^{2}/U\gg1$, so a
+polymer expansion in $t$ is not small, and barrier crossings on adjacent bonds
+couple through the fermion determinant at distance, with local electronic gaps
+closing momentarily whenever $v_{x}(\tau)\approx\mu$. This is the same
+determinant-coupling mechanism recorded in Section~\ref{sec:kernel} for the
+charge-skeleton step, appearing now with the deformation coordinate in place of
+the phonon number.
+
+What survives is therefore a dimer-level lifting of the cold projection together
+with a volume-uniform barrier bound, and what fails is the same
+charged-skeleton influence bound as before, now asked of a distortion path rather
+than of a phonon-number path. The route does not add an independent obstruction;
+it relocates one, and it removes the cold projection from the part of the problem
+where it was least harmful.
+
+\section{The cutoff-free directed kernel, and why factorization fails}
+\label{sec:kernel}
+
+The failure of route (b) is informative, because the object that breaks
+Gaussian domination, the influence action $\Phi_{\beta}$, can be integrated in
+closed form along a charged transfer. The resulting kernel carries the desired
+narrowing exponent, and it is the strongest positive object the programme has. It
+is not enough, for a reason that is structural: an electron history is a sum, not
+a product of independent transfers.
+
+\subsection{The exact influence action and the physical pair insertion}
+
+Work in the bare Lang-Firsov frame \eqref{eq:HLF} on the unrestricted phonon Fock
+space. For a closed occupation history $q_{z}(u)=n_{z}(u)-1$ on the circle of
+imaginary time, define
+\begin{equation}
+D_{\beta}(u)=\frac{\cosh\bigl(\Omega(\beta/2-u)\bigr)}{\sinh(\beta\Omega/2)},
+\qquad K_{\beta}^{\mathrm{cov}}(u)=g^{2}D_{\beta}(u),
+\label{eq:Db}
+\end{equation}
+so that $\int_{0}^{\beta}K_{\beta}^{\mathrm{cov}}(u)\,du=U$. Integrating the
+driven oscillator gives
+$Z_{\mathrm{ph}}\exp\bigl[\tfrac12\iint q_{z}K_{\beta}^{\mathrm{cov}}q_{z}\bigr]$,
+and separating the Lang-Firsov atomic attraction gives the influence action
+\begin{equation}
+\Phi_{\beta}[q]=\frac U2\int_0^{\beta}q(u)^{2}du-\frac12\iint q K_{\beta}^{\mathrm{cov}}q
+=\frac14\iint\bigl(q(u)-q(v)\bigr)^{2}K_{\beta}^{\mathrm{cov}}(u-v)\,du\,dv\ \ge0 .
+\label{eq:Phi}
+\end{equation}
+An electron history with $h$ hops contributes its fermion sign, the factor
+$t^{h}$, the ordered time integral, the odd-site atomic cost, and
+$\exp\bigl[-\sum_{z}\Phi_{\beta}[q_{z}]\bigr]$. In Matsubara form, with
+$\widehat q_{m}=\int q(u)e^{-i\omega_{m}u}du$ and jumps
+$c_{j}=q(u_{j}^{+})-q(u_{j}^{-})$ summing to zero,
+\begin{equation}
+\Phi_{\beta}[q]=\frac{U}{2\beta}\sum_{m\ne0}\frac{\omega_{m}^{2}|\widehat q_{m}|^{2}}
+{\Omega^{2}+\omega_{m}^{2}}
+=\frac{U}{4\Omega}\sum_{j,k}c_{j}c_{k}D_{\beta}(u_{j}-u_{k}).
+\label{eq:Phimodes}
+\end{equation}
+Since $D_{\beta}(u)$ has a minimum at $u=\beta/2$ and increases towards the
+ends $u=0,\beta$, the difference $D_{\beta}(0)-D_{\beta}(u)$ is small near the
+ends and largest at the antipode, which is the mechanism behind the coth in
+\eqref{eq:dir2} below.
+
+Two conventions matter and both are easy to get wrong. First, the physical pair
+field in the transformed frame carries its own displacements,
+\begin{equation}
+U_{\LF}\Dop_{x}^{\dagger}\Dop_{y}U_{\LF}^{\dagger}
+=\Dop_{x}^{\dagger}\Dop_{y}D_{x}(-2\alpha)D_{y}(2\alpha),
+\label{eq:pairdisp}
+\end{equation}
+so that an equal-time pair correlation is not a trace over the undisplaced
+Fock vacuum; dropping \eqref{eq:pairdisp} computes a different correlation. The
+sign of both displacements may be reversed together without changing a Gaussian
+trace, but not independently of the electron operator. Second, the atomic factor
+and the influence action must both be kept: relative to the pair and empty
+baselines, $\tfrac U2\int q^{2}=\tfrac U2\beta-\tfrac U2T_{\mathrm{odd}}$, and
+neither the odd-site penalty nor $\Phi_{\beta}$ may be dropped.
+
+\subsection{The free directed kernel}
+
+Let $X_{zw}=D_{z}(\alpha)D_{w}(-\alpha)$ be the displacement product carried by a
+coherent hopping process, and let $\langle\cdot\rangle_{\beta,\mathrm{ph}}$ be
+the free oscillator trace. Normal ordering gives, for real $r,s$,
+$\langle D(r;u)D(s;0)\rangle=\exp[-\tfrac12(r^{2}+s^{2})\coth(\beta\Omega/2)-rsD_{\beta}(u)]$,
+and independence of the two sites then yields the exact cutoff-free identities
+\begin{equation}
+\begin{gathered}
+F_{+}(u)=\bigl\langle X(u)X(0)\bigr\rangle,\qquad
+F_{-}(u)=\bigl\langle X^{\dagger}(u)X(0)\bigr\rangle,\\
+F_{\pm}(u)=\exp\Bigl[-\frac U\Omega\,
+\frac{\cosh(\beta\Omega/2)\pm\cosh\bigl(\Omega(\beta/2-u)\bigr)}{\sinh(\beta\Omega/2)}\Bigr].
+\end{gathered}
+\label{eq:Fpm}
+\end{equation}
+Here $F_{+}$ is the directed weight and $F_{-}$ the neutral one. Since
+$\cosh v\ge1$ and $(\cosh B+1)/\sinh B=\coth(B/2)$,
+$F_{+}(u)\le e^{-X\coth(\beta\Omega/4)}$ for every $u\in[0,\beta]$, whence
+
+\begin{theorem}[directed kernel bound]
+\label{thm:dir}
+For every $t$, $U$, $\Omega>0$ and $\beta>0$,
+\begin{equation}
+\Dir:=2t^{2}\int_{0}^{\beta}e^{-Uu}F_{+}(u)\,du
+\le\frac{2t^{2}}{U}\bigl(1-e^{-\beta U}\bigr)\,e^{-X\coth(\beta\Omega/4)} .
+\label{eq:dir2}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Insert $F_{+}(u)\le\exp[-X\coth(\beta\Omega/4)]$ into the integral and evaluate
+$\int_{0}^{\beta}e^{-Uu}du$.
+\end{proof}
+
+The exponent in \eqref{eq:dir2} is the right one: at $\beta\Omega\gg1$ it is
+$X[1+O(e^{-\beta\Omega})]$, at $\beta\Omega\ll1$ it is $4X/(\beta\Omega)$, which
+is $4U\tau/\Omega^{2}$, the classical narrowing, and it interpolates between them
+monotonically. It is also the same function that appears in the released
+cold-projected exponent.
+
+What Theorem~\ref{thm:dir} is \emph{not} is a bound on an interacting Gibbs
+activity. It is a statement about a free oscillator trace with one inserted
+charge pair, and it says nothing about how much the surrounding electron history
+costs or gains. The remainder of this section is about exactly that.
+
+\subsection{Conditional factorization is false}
+
+The natural way to use Theorem~\ref{thm:dir} is to bound the weight of an
+electron history by the product of the weights of its charged transfers, in other
+words to assume that the Gaussian factor factorizes over disjoint time segments.
+Precisely, for a chronological sequence of real bond charges $k_{j}$ at times
+$u_{j}$, whether or not $\sum k_{j}=0$, the free oscillator trace over the two
+endpoints is
+\begin{equation}
+W(k,u)=\exp\Bigl[-\alpha^{2}\sum_{j,k}k_{j}k_{k}D_{\beta}(u_{j}-u_{k})\Bigr],
+\label{eq:W}
+\end{equation}
+and for a division of the charges into two groups $A$ and $B$ the ratio
+$W(A\cup B)/[W(A)W(B)]$ has logarithm
+$-2\alpha^{2}\sum_{j\in A,k\in B}k_{j}k_{k}D_{\beta}(u_{j}-u_{k})$, which has no
+fixed sign. Positivity of the full quadratic form does not imply positivity of its
+cross term, and hence not the existence of independent activities.
+
+\begin{proposition}[explicit neutral enhancement]
+\label{prop:witness}
+Let $U=40$, $\Omega=1$, $\beta=1$ and $\epsilon=1/160$. Take the four bond charges
+$(+1,+1,-1,+1)$ at the ordered times $(\epsilon,2\epsilon,3\epsilon,1/2)$,
+starting from a doublon and ending in a pair that has been transferred. Every
+intermediate electronic occupation is legal, namely $(0,2),(1,1),(2,0),(1,1)$,
+and the last two hops are a completed neutral excursion around the post-transfer
+state. With $W_{4}=W\bigl((1,1,-1,1),u\bigr)$ and $W_{N}=F_{-}(1/2-3\epsilon)$,
+\begin{equation}
+\log\frac{W_{4}}{W_{N}}+40\coth(1/4)\in[9.295999605219290,\ 9.295999605219293].
+\label{eq:witness}
+\end{equation}
+In particular $\log(W_{4}/W_{N})>-40\coth(1/4)$, so $W_{4}/W_{N}$ exceeds the
+largest value that any free directed block $F_{+}(u)$ can take at these
+parameters, not merely $F_{+}(\epsilon)$.
+\end{proposition}
+
+The interval in \eqref{eq:witness} is an enclosure computed in fixed-precision
+interval arithmetic from the closed form \eqref{eq:Db}; the two endpoints differ
+by $3\times10^{-15}$. The atomic odd-site durations split additively between the
+two groups, so multiplying by the atomic factors does not repair the
+factorization. This is a counterexample to a conditional local Gaussian bound,
+not to an integrated and suitably reorganized estimate.
+
+The witness is not an accident of $X=40$. It extends to an analytic family in the
+whole strong-coupling regime.
+
+\begin{theorem}[a persistent failure at $\beta\Omega=1$]
+\label{thm:family}
+Fix $\beta\Omega=1$, let $X\ge20$ and $h=1/(4X)$. Let $D(v)=\cosh(1/2-v)/\sinh(1/2)$
+and use the dimensionless times $(h,2h,3h,1/2)$ with charges $(+1,+1,-1,+1)$, as
+in Proposition~\ref{prop:witness}. Then
+\begin{equation}
+\log\frac{W_{4}}{W_{N}}+X\coth(1/4)\ \ge\ \frac{X}{5}-\frac{13}{4}\ \ge\ \frac34>0 .
+\label{eq:family}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+On $[0,1]$, $|D'(v)|\le1$. At $h=0$ the three coincident unit charges combine to
+$+1$, so that $\log W_{4}$ and $\log W_{N}$ are evaluated with two unit charges
+separated by $\beta/2$. Using $(\cosh(1/2)+1)/\sinh(1/2)=\coth(1/4)$ and
+$(\cosh(1/2)-1)/\sinh(1/2)=\tanh(1/4)$,
+\[
+\log W_{4}=-2\alpha^{2}\coth(1/4)=-X\coth(1/4), \qquad
+\log W_{N}=-2\alpha^{2}\tanh(1/4)=-X\tanh(1/4),
+\]
+while the free directed maximum is $-X\coth(1/4)$ by \eqref{eq:Fpm}. The margin at
+$h=0$ is therefore exactly $X\tanh(1/4)$. Moving the first three charges to
+distinct legal times shifts $\log W_{4}$ by at most $10Xh$, the six unordered
+separations being $h,2h,h,h,2h,3h$ with sum $10h$, and shifts $\log W_{N}$ by at
+most $3Xh$, because each exponent is $X$ times a signed sum of nonnegative
+$D$ values with $|D'|\le1$. Hence the legal margin is at least
+$X\tanh(1/4)-13/4\ge X/5-13/4\ge3/4$ for $X\ge20$, where $\tanh(1/4)\ge1/5$
+follows from $e^{1/2}\ge1+1/2$.
+\end{proof}
+
+Choosing $\Omega=\kappa t^{2}/U$ with fixed $\kappa>0$ and $t/U$ small places this
+family at $\tau=\Omega$ inside the strong-coupling temperature window of
+\cite{largeu,strong}, whenever $\kappa$ is below the constant there. Its long
+neutral odd excursion is atomically costly, which is why it is a counterexample to
+the conditional local bound and not to a normalized integrated ceiling.
+
+\subsection{A closed pair-return loop costs only \texorpdfstring{$O(1)$}{O(1)}}
+
+\begin{proposition}[short closed loops]
+\label{prop:loop}
+Take four hops on a bond with charges $(+1,+1,-1,-1)$ at $(0,\epsilon,3\epsilon,4\epsilon)$,
+$\epsilon=1/(4U)$, and $\beta>4\epsilon$. The occupations are
+$(0,2),(1,1),(2,0),(1,1),(0,2)$, a closed and legal electron history. Then
+\begin{equation}
+\Phi_{\beta}[q]\le\tfrac52,\qquad \tfrac U2T_{\mathrm{odd}}=\tfrac12,
+\qquad\text{so the total action is at most }3,
+\label{eq:loop}
+\end{equation}
+independently of $U/\Omega$ as $\Omega/U\to0$ with $\beta\Omega=1$.
+\end{proposition}
+
+\begin{proof}
+At each of the two sites, drop the nonnegative covariance form after subtracting
+the static baseline: $\Phi[q]=\Phi[q-q_{0}]\le\tfrac U2\int(q-q_{0})^{2}$, where
+$q_{0}$ is the time average. With the durations $T=3\epsilon$ at each site this
+gives $\Phi\le U(4T-2\epsilon)=\tfrac52$, and the two odd-site atomic costs
+$2U\epsilon$ combine to $\tfrac12$.
+\end{proof}
+
+Both directed free weights in this history are exponentially small in $X$, while
+the closed loop's weight is at least $e^{-3}$. A short virtual loop does not by
+itself force pair ordering, but it does mean that any estimate whose activities
+are the charged weights of Section~\ref{sec:kernel} undercounts the true weight of
+the history that carries a pair by an $O(1)$ factor at every return.
+
+\subsection{The endpoint insertion has the same short-time behaviour}
+
+A site with $n=2$ for a duration $T$ and $n=0$ otherwise has jumps $+2,-2$ and
+exact action $\Phi_{\mathrm{site}}(T)=2X[D_{\beta}(0)-D_{\beta}(T)]$, while a
+pair of opposite sites has $\Phi_{\mathrm{pair}}(T)=4X[D_{\beta}(0)-D_{\beta}(T)]$.
+At $T=\beta/2$ the site action is $2X\tanh(\beta\Omega/4)$, not $4X\tanh(\beta\Omega/4)$,
+and for fixed $\beta\Omega>0$ and $T=1/U$ the site action tends to $2$, not $4$.
+At $\beta\Omega\ll1$ the antipodal site action is $\beta U/2+O(\beta U(\beta\Omega)^{2})$,
+not $\beta U$. The coth of the open kernel therefore cannot be interchanged with
+the tanh of a closed loop, and any estimate that does so misstates the action by a
+constant factor at short times, which in a cluster expansion is the difference
+between convergence and divergence.
+
+\subsection{A facing-plateau lemma, and what it does not do}
+
+One local positive statement does survive on the interacting side. It applies to
+a restricted geometry, which is part of its hypotheses and not a consequence of
+the model.
+
+\begin{theorem}[facing plateaus]
+\label{thm:plateau}
+Assume facing sign-restricted intervals of length at least $L_{0}$, separated by
+an odd-only gap of length $\delta$, with the intervals and gap fitting on the
+circle without overlap: on the left interval $q\in\{-1,0\}$, on the right
+$q\in\{0,1\}$, and $q=0$ on the gap. Let $W=\min(L_{0},1/\Omega)$ and let
+$T_{\mathrm{odd}}=|\{q=0\}|$. Then
+\begin{equation}
+\frac U2T_{\mathrm{odd}}+\Phi[q]\ \ge\ \frac{3}{22}\,UW .
+\label{eq:plateau}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+If $T_{\mathrm{odd}}\ge W$ the atomic term alone suffices. Otherwise
+$\delta\le T_{\mathrm{odd}}<W$. Take a trapezoid $g$ equal to one on the gap, with
+ramps of width $W$ on each facing interval and zero outside. Cauchy-Schwarz over
+the nonzero Matsubara modes, using \eqref{eq:Phimodes}, gives
+$\Phi[q]\ge\tfrac U2\,|\!\int qg'|^{2}/\int(\Omega^{2}g^{2}+(g')^{2})$. The
+numerator's square root is at least $2-T_{\mathrm{odd}}/W>1$, and the denominator is
+$2/W+\Omega^{2}(2W/3+\delta)<11/(3W)$. Hence $\Phi[q]\ge3UW/22$.
+\end{proof}
+
+Two limitations decide the fate of the plateau route. The facing geometry is not
+forced: two arbitrary disjoint intervals do not produce it, and a charged
+transfer is not guaranteed to possess such intervals at all. Even where it does,
+several transfers may share the same cost, and the statement has not been shown
+additive along a spatial skeleton. A local gain of $3UW/22$ per plateau is worth
+nothing in a long-distance estimate unless the costs can be allocated to distinct
+transfers with bounded overlap and unless the dwell time that produces the
+plateau is itself controlled. Neither is available.
+
+\subsection{What the kernel route still needs}
+
+The failures of this section narrow the target. A candidate decomposition must
+distinguish short virtual transfers, whose spatial activity is algebraically
+small, from long-lived pair transport, and for the latter it must prove a
+\emph{normalized charged-skeleton} statement rather than multiply free $F_{+}$
+traces. Section~\ref{sec:openproblem} states that target precisely.
+
+\section{The hot sector in the full Gibbs state}
+\label{sec:vtail}
+
+\subsection{What is measured}
+
+Sections~\ref{sec:routes} and~\ref{sec:kernel} describe estimates that fail. This
+section describes one that succeeds, and it is the only volume-uniform positive
+statement in the note. Work in the bare Lang-Firsov frame of
+Section~\ref{sec:model}, with the frozen cutoff
+\begin{equation}
+M=\Bigl\lfloor\frac{X}{64}\Bigr\rfloor,\qquad
+Q_{z}=\mathbf{1}_{\{N_{z}\le M\}},\qquad F_{z}=\mathbf{1}-Q_{z},
+\qquad p=\operatorname{Tr}\bigl(\varrho F_{z}\bigr),
+\label{eq:Fz}
+\end{equation}
+where $\varrho=Z^{-1}e^{-\beta H}$ is the full Gibbs state of the transformed
+Hamiltonian. Because the Lang-Firsov transformation is a unitary conjugation, $p$
+is the Gibbs expectation of an honest observable; nothing about it depends on
+choosing a frame. What $p$ is not is the Gibbs weight of the complement of the
+cold projection used in \cite{largeu}: that object does not appear here. Nor is
+$p$ computed in a truncated model. The Gibbs state is the exact one, on the
+unbounded Fock space, and the phonon number is never cut in the destination
+space; the cutoff enters only as the target of one local bounded operator, whose
+matrix elements are estimated by Cauchy contours.
+
+Two logically distinct uses of an upper bound on $p$ occur in the literature on
+this problem. In a \emph{witness} route one hopes to compare the Gibbs state with
+its cold-projected image, which requires the complement to carry exponentially
+small weight. In an \emph{activity} route one hopes that the hot sector behaves
+like a rare defect in a polymer expansion, which requires its activity to be
+exponentially small in $X$. The theorem below shows that neither hope can be
+granted at the level of the total weight: the complement is always at least a
+fixed power of $t/U$.
+
+\subsection{Two theorems, and the local commutator proof}
+
+\begin{theorem}[dimer]\label{thm:vtailD}
+Fix $0<a<b<\infty$ and put
+\[
+c_{0}=\min\Bigl\{\frac1{64},\frac{a}{64+16\ln2}\Bigr\},\qquad
+c_{1}=\min\{1,1/b\},\qquad c_{2}=\frac1{4096}.
+\]
+On the two-site particle-hole-symmetric spinful Holstein dimer, if
+$a\le\beta\Omega\le b$, $0<\Omega<c_{0}U$ and $0<t<c_{1}\Omega^{3}/U^{2}$, then
+$\operatorname{Tr}(\varrho F_{z})\ge c_{2}(t/U)^{2}$ at either site.
+\end{theorem}
+
+\begin{theorem}[volume-uniform]\label{thm:vtailT}
+Let $\Lambda$ be a finite nearest-neighbour torus $(\mathbb{Z}/L\mathbb{Z})^{d}$
+with $d\ge1$, $L\ge3$, and $q=2d$; count each undirected edge once. With
+\[
+c_{0}=\min\Bigl\{\frac1{64},\frac{a}{64+16\ln(q+1)}\Bigr\},\qquad
+c_{1}=\min\Bigl\{\frac1{2^{20}q^{3}},\frac1{bq}\Bigr\},\qquad
+c_{2}=\frac1{4096},
+\]
+the conclusion of Theorem~\ref{thm:vtailD} holds at every site, with no constant
+depending on $L$. The same conclusion holds on every finite vertex-transitive
+simple graph of degree $q$.
+\end{theorem}
+
+The proof is a local commutator computation, and its structure is worth recording
+because it shows exactly where the phonon tail is created.
+
+\emph{Step 1: cold displacement decay.} For the one-mode cold projector
+$Q=\mathbf{1}_{\{N\le M\}}$ and $\gamma=\alpha$ or $2\alpha$, two Cauchy contours
+of radius $\sqrt M$ applied to the Bargmann kernel of $D(\gamma)$ give
+\begin{equation}
+\bigl\|QD(\gamma)Q\bigr\|\le\delta(X),\qquad
+\delta(X)=\Bigl(\frac{X}{64}+1\Bigr)e^{-c_{D}X},\qquad
+c_{D}=\frac14-\frac1{4\sqrt{2}}-\frac1{64}>0 ,
+\label{eq:delta}
+\end{equation}
+for $X\ge64$. Hence on two cold sites the two opposite displacement images
+overlap in norm by at most $\delta^{2}$.
+
+\emph{Step 2: a positive virtual block.} For one edge $e=\{z,w\}$, let $P$ project
+onto the cold pair and empty arrangements of the edge, $R=P_{2}F_{z}$ with $P_{2}$
+the two-odd-site sector, $L=U+\Omega(N_{z}+N_{w})$ and
+$\mathcal T=RL^{-1}V_{e}P$, and set $A=2PV_{e}RL^{-1}V_{e}P$. Then
+\begin{equation}
+A\ \ge\ \frac23\,\frac{t^{2}}{U}\,P .
+\label{eq:Apos}
+\end{equation}
+The rank of $P$ is finite while $R$ has infinite rank: $A$ is an operator of
+finite rank whose range contains the phonon tail, and \eqref{eq:Apos} is a
+strictly positive virtual second-order amplitude. The proof uses only the
+two-dimensional charge component sum, \eqref{eq:delta}, and the
+Cauchy--Schwarz inequality in the $L^{1/2}$ and $L^{-1/2}$ norms.
+
+\emph{Step 3: a local Ehrenfest identity.} With $K=\mathcal T-\mathcal T^{\dagger}$
+one has, exactly on the edge,
+\begin{equation}
+[K,H_{0}]=-B-B^{\dagger}+\mathcal T E_{c}+E_{c}\mathcal T^{\dagger},
+\qquad \|E_{c}\|\le U/32,
+\label{eq:ehrenfest}
+\end{equation}
+and every term on the right except the first two is bounded by $t\sqrt p$.
+Using trace Cauchy--Schwarz for operators with one endpoint in a hot or odd
+projector, and the trace identity $\operatorname{Tr}(\varrho[K,H])=0$, one
+obtains
+\begin{equation}
+\frac23\langle P\rangle\le(5+20x)\frac{\sqrt p}{x}+32(q-1)\sqrt r ,
+\label{eq:main}
+\end{equation}
+where $x=t/U$ and $r=\operatorname{Tr}(\varrho\,o_{z})$ is the probability that a
+site is odd. The trace identity needs care on the unbounded Fock space: $K$ is not
+bounded, but $\mathcal T$ satisfies $H_{0,e}\mathcal T=RV_{e}P$ and
+$\mathcal T H_{0,e}=\mathcal T E_{c}$ locally and preserves
+$\operatorname{Dom}(H_{0})$, in the sense that
+$\mathcal T\operatorname{Dom}(H_{0})\subseteq\operatorname{Dom}(H_{0})$. On a
+torus with sites outside the edge, $\mathcal T$ does not map the whole Hilbert
+space into $\operatorname{Dom}(H_{0})$, because the exterior energy stays
+unbounded; the exterior part of $H_{0}$ commutes with $\mathcal T$ and cancels in
+the commutator on that domain. Hence $K$ preserves $\operatorname{Dom}(H_{0})$
+and $[K,H_{0}]$ extends from it to the bounded operator in \eqref{eq:ehrenfest}.
+Expanding in the discrete eigenbasis of the bounded-below $H$ then justifies the
+identity term by term.
+
+\emph{Step 4: two local inputs.} Removing the $q$ incident edges at a site changes
+the Hamiltonian in norm by at most $2qt$, and concavity of the local free energy
+in a field coupling to $o_{z}$ gives
+\begin{equation}
+r\le\frac{4}{\beta U}e^{-\beta U/4}+16qx .
+\label{eq:rbound}
+\end{equation}
+Second, the on-site unitary that interchanges $|0\rangle$ and $|2\rangle$ changes
+only the edges incident to one endpoint, so by quantum Pinsker
+$|\langle E\rangle-\langle E_{\mathrm{eq}}\rangle|\le\sqrt{2q\beta t}$, and since
+$E+E_{\mathrm{eq}}=\mathbf{1}-o_{z}-o_{w}$,
+\begin{equation}
+\langle P\rangle\ge\tfrac12-r-\sqrt{q\beta t/2}-2p .
+\label{eq:Pbound}
+\end{equation}
+Inserting \eqref{eq:rbound} and \eqref{eq:Pbound} into \eqref{eq:main} and using
+$X>64+16\ln(q+1)$ closes the constants. The two logically separate cases
+$p\ge1/16$ and $p<1/16$ both end at $p>x^{2}/4096$.
+
+Three features of this proof are the point. It uses no positivity of fermionic
+worldline weights, so it applies to the spinful model with signs. It pays
+explicitly for the absence of a local particle-hole symmetry at nonzero hopping;
+equality of paired and equal-even probabilities would be false. And every
+estimate is local, so the constants do not move with the volume: only the edge and
+its $2(q-1)$ neighbours enter. What the theorem does \emph{not} do is bound the
+effect of the hot sector on pair propagation. It measures a weight, not an
+influence.
+
+\subsection{An independent second-order route on the dimer}
+
+A second, logically independent derivation reaches the same conclusion on the
+dimer by a Duhamel expansion, with different constants and a much narrower hopping
+window. Write $V=-tW$ with $\|W\|=2$ and consider the numerator
+$N(t)=\operatorname{Tr}(F_{z}e^{-\beta(H_{0}-tW)})$. Hopping has no diagonal
+electronic matrix elements, and since $F_{z}$ and $H_{0}$ are simultaneously
+diagonal every second-order simplex summand is nonnegative. Keeping only the
+channels that start in a hot two-single-occupancy singlet and visit a pair vacuum
+gives, after the exact simplex integral
+$\int_{0}^{\beta}(\beta-s)e^{sE}ds=(1-(1+\beta E)e^{-\beta E})/E^{2}$ and a
+Poisson concentration estimate on the Franck-Condon sum,
+\begin{equation}
+\frac{t^{2}N_{2}}{Z_{0}}\ge\frac{h}{256}\,x^{2},
+\qquad h=(1-e^{-a})^{2}.
+\end{equation}
+The all-orders remainder obeys
+$|R_{\ge3}|\le\frac43Z_{0}(\beta t)^{3}e^{2\beta t}$, by noncommutative
+Schatten--H\"older on each Duhamel simplex, so that with
+\begin{equation}
+c_{0}^{\mathrm{Du}}=\min\Bigl\{\frac1{64},\frac{a}{16}\Bigr\},\qquad
+c_{1}^{\mathrm{Du}}=\min\Bigl\{\frac1b,\frac{h}{2^{15}b^{3}}\Bigr\},\qquad
+c_{2}^{\mathrm{Du}}=\frac{h}{1024}
+\label{eq:duconstants}
+\end{equation}
+the same hypotheses give $N(t)/Z(t)\ge c_{2}^{\mathrm{Du}}x^{2}$ whenever
+$\beta t\le b\,c_{1}^{\mathrm{Du}}/X^{2}$. These constants are sufficient, not
+optimized. The window has the same $t=O(\Omega^{3}/U^{2})$ scaling as
+Theorem~\ref{thm:vtailD} with a much smaller prefactor $c_{1}^{\mathrm{Du}}$, and a
+volume-extensive remainder of this type would
+\emph{not} give Theorem~\ref{thm:vtailT}: the local argument is what makes the
+extension volume-uniform.
+
+\subsection{The channel coefficient, and what the first rotation does not do}
+
+It is worth separating the part of the virtual cloud that comes from the
+Lang-Firsov denominator from the part that is Franck-Condon in origin. Let
+$p_{X}(n)=e^{-X/2}(X/2)^{n}/n!$ and define the dimensionless channel weights
+\begin{align}
+w_{\mathrm{LF}}(X)&=\sum_{n_{z}>M,\,n_{w}\ge0}
+\frac{p_{X}(n_{z})p_{X}(n_{w})}{\bigl(1+(n_{z}+n_{w})/X\bigr)^{2}},
+\label{eq:wLF}\\
+w_{S_{1}}(X)&=\sum_{n_{z}>M,\,n_{w}\ge0}p_{X}(n_{z})p_{X}(n_{w})
+\Bigl(\frac{(n_{z}+n_{w})/X}{1+(n_{z}+n_{w})/X}\Bigr)^{2}.
+\label{eq:wS1}
+\end{align}
+The second line is the same channel after the first Schrieffer-Wolff rotation of
+\cite{largeu}, whose generator removes the electronic gap $U$ from the
+denominator: the amplitude $1/(1+s/X)$ becomes $1/(1+s/X)-1=-s/X/(1+s/X)$. At the
+Franck-Condon peak $s=n_{z}+n_{w}\sim X$ this changes $+1/2$ into $-1/2$, and the
+squared weight is unchanged. Poisson concentration gives
+\begin{equation}
+\lim_{X\to\infty}w_{\mathrm{LF}}(X)=\lim_{X\to\infty}w_{S_{1}}(X)=\frac14,
+\qquad
+w_{\mathrm{LF}}=\frac14+\frac{3}{16X}+O(X^{-2}),\quad
+w_{S_{1}}=\frac14-\frac{1}{16X}+O(X^{-2}).
+\label{eq:wlimit}
+\end{equation}
+So the tail is not an artifact of the bare-frame denominator. The leading
+Franck-Condon channel keeps a coefficient of order one in the strong-coupling
+limit, and the rotation specified in \cite{largeu} removes the electronic energy
+cost but not the phonon energy of order $U$. An energy-resolving generator can
+cancel each nonresonant vacuum channel at first order, but it cannot be extended
+across the exact resonances of the full Fock space. \emph{A nonperturbative lower
+bound for the rotated full Gibbs state is open}; \eqref{eq:wlimit} is a statement
+about a specified perturbative channel, not about that state.
+
+\subsection{How to read a positive lower bound}
+
+Three readings, in increasing order of what is actually supported.
+
+First, \eqref{eq:wlimit} and Theorems~\ref{thm:vtailD} and~\ref{thm:vtailT} do not
+falsify the lifted ceiling, and nothing in this note does. A ceiling is an upper
+bound on a temperature, and it is entirely compatible with rapid pair
+decorrelation, with a hot sector of algebraic weight, and with the failure of
+every factorization attempted in Section~\ref{sec:kernel}. The cold-projected
+theorem of \cite{largeu} is not in question.
+
+Second, the results do constrain the shape of any proof. An argument that expels
+the hot sector by showing it is exponentially rare cannot exist: the weight is
+bounded below by $c_{2}(t/U)^{2}$ at every temperature in the stated window, with
+constants that do not depend on the volume. Any comparison between the Gibbs
+state and its cold-projected image must therefore tolerate an algebraically large
+displaced component, which is why the comparison is naturally a statement about
+influence and not about weight.
+
+Third, the lower bounds are compatible with the upper bounds one gets from the
+influence action. The exact action
+$\Phi_{\beta}[q]=\frac{U}{4\Omega}\sum_{j,k}c_{j}c_{k}D_{\beta}(u_{j}-u_{k})$ is
+nonnegative on closed charge histories, so a large total weight can coexist with
+strong suppression of every individual long-lived decoration. That coexistence is
+precisely the reason a bound on the total weight is not enough; the missing object
+is described next.
+
+\section{Charge order: the same wall seen from the other side}
+\label{sec:cdw}
+
+\subsection{The strong-coupling pseudospin theory, as known results}
+
+Half-filled models of this type have a second strong-coupling limit in which the
+electron pair on a site plays the role of a hard-core boson. It is worth recording
+what is known in that limit, because the same wall that obstructs the pairing
+ceiling obstructs the ordering theorem there, and because the pseudospin picture
+is sometimes offered as an alternative route to a ceiling.
+
+On a periodic hypercubic torus with $N=L^{d}$, $d\ge2$, $z=2d$, consider
+\begin{equation}
+H=-t\sum_{\langle x,y\rangle,\sigma}\bigl(c^{\dagger}_{x\sigma}c_{y\sigma}
++\mathrm{h.c.}\bigr)+\sum_{x}\Bigl[\frac{p_{x}^{2}}{2m}+\frac K2q_{x}^{2}
++gq_{x}(n_{x}-1)\Bigr],
+\label{eq:cdwH}
+\end{equation}
+with $U=g^{2}/K$, $\omega=\hbar\Omega=\hbar\sqrt{K/m}$, $X=U/\omega$ and
+$\alpha^{2}=X/2$. The shift $n_{x}-1$ makes the model particle-hole symmetric at
+half filling. After the Lang-Firsov transformation and subtraction of the
+oscillator zero point and the atomic ground energy,
+$H_{\mathrm{LF}}=H_{0}+Q$ with $h_{x}=\omega b_{x}^{\dagger}b_{x}
++\frac U2\mathbf{1}_{\{n_{x}=1\}}$ and bond hopping dressed by opposite
+displacements. The dressed hopping has norm exactly $2t$.
+
+Second-order degenerate perturbation theory in the cold pair-hole subspace gives
+an easy-axis XXZ pseudospin model with
+\begin{equation}
+f_{z}(X)=e^{-X}\,{}_{1}F_{1}(X;X+1;X),\qquad
+f_{xy}(X)=e^{-X}\,{}_{1}F_{1}(X;X+1;-X)
+=e^{-2X}{}_{1}F_{1}(1;X+1;X),
+\label{eq:fz}
+\end{equation}
+$J_{a}=4t^{2}f_{a}/U$ and
+\begin{equation}
+H_{2}=\sum_{b}\Bigl[J_{z}\bigl(\tau_{x}^{z}\tau_{y}^{z}-\tfrac14\bigr)
+-\frac{J_{xy}}{2}\bigl(\tau_{x}^{+}\tau_{y}^{-}
++\tau_{x}^{-}\tau_{y}^{+}\bigr)\Bigr],
+\label{eq:H2}
+\end{equation}
+with no additional constant outside the bond sum. In the integral form used
+below,
+\begin{equation}
+f_{z,\;xy}(X)=Xe^{-X}\!\int_{0}^{1}\!u^{X-1}e^{\pm Xu}\,du,
+\qquad
+f_{z}(X)-f_{xy}(X)=2Xe^{-X}\!\int_{0}^{1}\!u^{X-1}\sinh(Xu)\,du>0 .
+\label{eq:fdiff}
+\end{equation}
+
+Every statement in \eqref{eq:fz}--\eqref{eq:fdiff} is a known result, and this
+note claims none of it. The bipolaron or pseudospin effective Hamiltonian of the
+strong-coupling electron-phonon problem, with distinct pair-transfer and
+pair-hole diagonal weights and hence easy-axis anisotropy, was derived by
+Alexandrov and Ranninger \cite{ar81} and by Hirsch and Fradkin \cite{hf83}, who
+mapped the strong-coupling molecular-crystal Holstein model onto this
+spin-$\frac12$ XXZ chain, isotropic as $\omega\to\infty$ and Ising as
+$\omega\to0$. The review of
+Micnas, Ranninger and Robaszkiewicz \cite{mrr90} describes the same mapping and
+the resulting competition between charge and pair coherence. The exact integral
+representation in \eqref{eq:fdiff} is published: Han, Kivelson and Yao
+\cite{hky20}, in the supplement of their paper, give
+$F(\pm X,Y)=Ye^{-X}\int_{0}^{1}z^{Y-1}e^{\pm Xz}dz$, which at $Y=X$ is
+\eqref{eq:fdiff}. Freericks \cite{freericks93} rederived the second-order
+coefficients as functions of $X$ and extended the expansion. The elementary
+consequences are recorded here only for completeness: $J_{z}\to 2t^{2}/U$ and
+$J_{xy}=O(\sqrt{X}e^{-2X})$ as $X\to\infty$, both tend to $4t^{2}/U$ as
+$X\to0$, and the anisotropy is positive at every finite frequency.
+
+\subsection{What this note adds: a full-Fock transform and two trace lemmas}
+
+The proofs in this area usually proceed through an effective Hamiltonian. What is
+added here is that the first step can be done on the unrestricted Fock space, with
+volume-uniform constants and no phonon cutoff, and that two of the trace inputs
+needed later can be stated and proved in the same setting.
+
+\emph{A bounded Lie-Schwinger generator.} For a bond $b=\{x,y\}$ let
+$P_{b}=P_{x}P_{y}$ with $P_{x}=p_{x,-}+p_{x,+}$ the cold pair-hole projectors,
+and set
+\begin{equation}
+A_{b}=(H_{0,b}|_{P_{b}^{\perp}})^{-1}Q_{b}P_{b},\qquad
+S_{b}=A_{b}-A_{b}^{\dagger},\qquad
+O_{b}=P_{b}Q_{b}+Q_{b}P_{b},\qquad
+R_{b}=(\mathbf{1}-P_{b})Q_{b}(\mathbf{1}-P_{b}).
+\end{equation}
+Although $(H_{0,b}|_{P_{b}^{\perp}})^{-1}$ has norm $1/D$ with
+$D=\min(U/2,\omega)$, its action on $Q_{b}P_{b}$ lands in the two-single-electron
+sector where $H_{0,b}\ge U$, so that
+$\|A_{b}\|=\|S_{b}\|\le2t/U$, the rank of $A_{b}$ on the two-site bond space is at
+most two, that of $S_{b}$ at most four, and
+$\|O_{b}\|,\|R_{b}\|\le2t$. Each $S_{b}$ preserves $\operatorname{Dom}(H_{0})$,
+the finite-volume sum $S=\sum_{b}S_{b}$ is bounded and anti-self-adjoint, and the
+transformation
+\begin{equation}
+e^{S}H_{\mathrm{LF}}e^{-S}=H_{0}+R+
+\sum_{n\ge1}\Bigl[\frac1{n!}\mathrm{ad}_{S}^{n}R
++\frac{n}{(n+1)!}\mathrm{ad}_{S}^{n}O\Bigr]
+\label{eq:LS}
+\end{equation}
+holds exactly on $\operatorname{Dom}(H_{0})$ in finite volume, with
+$O=\sum_{b}O_{b}$ and $R=\sum_{b}R_{b}$. The closedness argument is two lines:
+for $\psi\in\operatorname{Dom}(H_{0})$,
+$\|H_{0}S^{k}\psi\|\le\|S\|^{k}\|H_{0}\psi\|+k\|S\|^{k-1}\|O\|\|\psi\|$, so the
+exponential series converges in the graph norm.
+
+\emph{Connected-word bounds.} Nonoverlapping even fermionic operators commute, so
+a nested commutator with a root bond has a connected support of at most $k+2$
+sites at step $k$, with at most $z(k+2)$ choices of the next bond. With
+$r=4zt/U<1$ the terms of \eqref{eq:LS} from three hopping events on obey
+\begin{equation}
+\frac{\|E_{\ge3}\|}{N}\le zt\,\frac{r^{2}(5-3r)}{(1-r)^{2}},\qquad
+\|E_{\ge3}\|_{2}\le4zt\,\frac{q^{2}(20-25q+9q^{2})}{(1-q)^{3}},
+\label{eq:cw1}
+\end{equation}
+for $q=2r<1$, where the exponentially weighted norm is
+$\|\Phi\|_{2}=\sup_{x}\sum_{B\ni x}2^{|B|}\|\Phi_{B}\|$ for the interaction
+decomposition induced by connected words. On a bipartite lattice the operator
+$G=(-1)^{N_{A}}$ anticommutes with $Q_{b}$ and $S_{b}$ and commutes with $P$, so
+$P[S,R]P=0$ and the cold compression of the cubic term vanishes; the compressed
+remainder begins at four hopping events, with
+\begin{equation}
+\frac{\|PE_{\ge3}P\|}{N}\le zt\,\frac{r^{3}(7-3r^{2})}{(1-r^{2})^{2}},\qquad
+\|PE_{\ge3}P\|_{2}\le4zt\,\frac{q^{3}(35-28q^{2}+9q^{4})}{(1-q^{2})^{3}} .
+\label{eq:cw2}
+\end{equation}
+
+\emph{An explicit local window.} In the window
+\begin{equation}
+\frac U8\le\omega\le\frac U4,\qquad \frac tU\le\frac1{65536\,d^{2}},
+\label{eq:window}
+\end{equation}
+one has $X\in[4,8]$ and $r\le1/16384$. Jensen's inequality for the Poisson mean
+gives $f_{z}(X)>1/2$, while $0<f_{xy}(X)<e^{-X}\le e^{-4}<3/103$, using the exact
+witness $e^{4}>103/3$. Hence
+\begin{equation}
+\frac{J_{xy}}{J_{z}}<\frac{6}{103}<\frac1{16},\qquad
+\Delta:=J_{z}-J_{xy}>\frac{194}{103}\frac{t^{2}}{U},\qquad
+\|PE_{\ge3}P\|_{2}<\frac{\Delta}{2048},
+\label{eq:window2}
+\end{equation}
+the last comparison being exactly $17\cdot103<194\cdot16$. All constants in
+\eqref{eq:window2} were verified in exact rational arithmetic, and the
+coefficient values in \eqref{eq:fz} were enclosed in rational intervals narrower
+than $10^{-40}$ at $X=\frac1{16},\frac14,1,2,4,8,16$ by two independent
+implementations using different representations.
+
+\emph{A fixed-history trace bound.} Let $D=\min(U/2,\omega)$. On a single site
+\begin{equation}
+\operatorname{Tr}_{\mathcal H_{x}}\bigl(Q_{x}^{h}e^{-vh_{x}}\bigr)
+=\frac{2\bigl(e^{-vU/2}+e^{-v\omega}\bigr)}{1-e^{-v\omega}}
+\le\frac{4e^{-vD}}{1-e^{-vD}},
+\label{eq:htrace}
+\end{equation}
+and for $vD\ge4$ this is at most $e^{-vD/2}$, because
+$4e^{-2}+e^{-4}<21/25<1$ is an exact witness. Consequently, for
+$\beta D\ge4$, for any split $0<\ell_{1},\dots,\ell_{k}$ with
+$\sum_{i}\ell_{i}=\beta$ and for bounded operators $B_{i}$, noncommutative
+Schatten--H\"older applied to
+$A_{i}=E_{i}e^{-\ell_{i}H_{0}}$ with exponents $p_{i}=\beta/\ell_{i}$ gives the
+fixed-history bound
+\begin{equation}
+\bigl|\operatorname{Tr}(A_{1}B_{1}\cdots A_{k}B_{k})\bigr|
+\le\Bigl(\prod_{i}\|B_{i}\|\Bigr)
+\exp\Bigl[-\frac D2\sum_{i}\ell_{i}\,\#\{x:\ a_{i,x}=h\}\Bigr].
+\label{eq:schatten}
+\end{equation}
+The point of evaluating the heat-trace factors at $\beta$ rather than at the
+individual $\ell_{i}$ is that $\operatorname{Tr}(Q_{x}^{h}e^{-\ell h_{x}})$
+diverges as $\ell\to0^{+}$, so a bound organized by short intervals cannot be
+written down, while the global Schatten exponents make the total high-site time
+$-\frac D2\sum_{i}\ell_{i}\#\{x:a_{i,x}=h\}$ appear instead. Inserting a canonical
+electronic projector of norm one preserves \eqref{eq:schatten}.
+
+\subsection{The missing lemma, and why Miyao's theorem does not apply}
+
+The ordering statement one would like is that the staggered density has a
+positive two-point floor,
+\begin{equation}
+\bigl\langle M_{L}^{2}\bigr\rangle_{\beta,L}\ge m_{*}^{2},\qquad
+M_{L}=N^{-1}\sum_{x}\eta_{x}s_{x},\qquad s_{x}=n_{x}-1,
+\label{eq:ML}
+\end{equation}
+uniformly in even $L$, in the canonical half-filled sector, for some explicit
+$m_{*}>0$ in a temperature window. \emph{This is open for the pure spinful
+dispersionless Holstein model.} Note also that a one-point staggered density
+vanishes in a symmetric finite-volume state and is not this order parameter, and
+that at $t=0$ the canonical random-pair mixture has
+$\langle M_{L}^{2}\rangle=1/(N-1)$, so the cold degeneracy alone carries no
+order.
+
+What \eqref{eq:LS}--\eqref{eq:schatten} provide is a local operator series and a
+bound on a fixed history. What is missing is the normalized combinatorial
+transfer, in the following precise form.
+
+\begin{quote}\itshape
+$W=0$ decorated-contour lemma. A volume-uniform, normalized decorated-contour
+expansion for the full transformed Hamiltonian at the two separated scales $D$ and
+$\Delta$, uniform in $L$ and $\beta$, supplying: (i) a space-time contour
+representation in the canonical sector, or an explicitly justified conversion to
+it, with the two checkerboards as bulk phases and the unrestricted high sector as
+a single label; (ii) absolutely convergent connected vacuum-cluster weights whose
+homogeneous part reproduces the order-$t^{2}$ coefficient and its bulk corrections
+without double counting the transformed second-order term; (iii) after subtracting
+the homogeneous bulk potential, a boundary-decoration bound
+$\sum_{C:\,\widetilde C\cap\operatorname{core}\gamma\ne\varnothing}
+|\Phi^{T}(C;\gamma)|\le\epsilon_{b}|\operatorname{core}\gamma|$, with the sum
+taken over actual integrated connected-cluster weights and retaining the
+difference of compatibility indicators; (iv) an anchored polymer majorant of the
+form $\sup_{a}\sum_{\gamma:a\in\operatorname{core}\gamma}|w(\gamma)|e^{2|\operatorname{core}\gamma|}\le\frac18$,
+with explicit lower bounds on the phase magnetization and control of
+periodic and canonical finite-volume interfaces; (v) constants $c_{1},c_{2}$ and a
+declared frequency interval such that the estimates hold whenever $t/U\le c_{1}$
+and $k_{B}T\le c_{2}\Delta$.
+\end{quote}
+
+Three comments make the difficulty concrete. First, global particle-hole symmetry
+does not help at an interface. It interchanges the two homogeneous checkerboards
+and equates their bulk free energies; it does not equate the loop partition
+function in a domain-wall background with that in a homogeneous background,
+because a cluster touching the interface has different compatibility constraints,
+and flipping only the interior changes the hopping that crosses its boundary. The
+actual decorated-cluster formula of the Koteck\'y--Ueltschi type \cite{ku99}
+retains a term
+proportional to $\mathbf{1}_{C\sim\Gamma}-\mathbf{1}_{\{\text{background near }C
+\text{ is a ground configuration},\,C\sim\text{that background}\}}$, which
+vanishes when the cluster box misses the contour core and not when the two pure
+phases are symmetry related. Second, a norm-small cold remainder does not control
+the order-$t$ hopping inside the high block, repeated high excursions, or the
+off-diagonal parts of the second-order term. Third, the closest rigorous bosonic
+contour theorem, Miyao \cite{miyao24} with its correction \cite{miyao24corr},
+requires a bare nearest-neighbour repulsion $W$ with $0<\varepsilon<W$, so it
+excludes $W=0$ by hypothesis and does not cover \eqref{eq:cdwH}. Earlier
+infrared-bound results in this family likewise assume a positive direct
+interaction and three or more dimensions. Finite-volume singlet theorems are not
+charge-order results.
+
+This is a barrier of exactly the same shape as the one in
+Section~\ref{sec:openproblem}: a strong-coupling effective theory plus a
+volume-uniform local remainder does not by itself give a statement about the full
+Gibbs state, and the missing object is again a normalized sum over decorated
+histories with a controlled interface. The two open lemmas are not the same lemma,
+and this note proves no implication between them. It records that the pairing
+ceiling and the charge-order floor both stop at the same place, and that neither
+can be reached from the effective Hamiltonian side by operator estimates alone.
+
+\section{The remaining statement: a charged-skeleton influence bound}
+\label{sec:openproblem}
+
+\subsection{Why exactly one lemma is left}
+
+Collecting the obstructions gives a short list of what a proof of \eqref{eq:lift}
+cannot use. It cannot rotate the interactions away at operator level
+(Section~\ref{sec:routes}\ref{sub:routea}), because the full generator is
+resonant and the virtual cloud is of weight $\Theta(x^{2})$ at phonon number of
+order $X$. It cannot dominate the influence functional pointwise by a Gaussian
+(Section~\ref{sec:routes}\ref{sub:routeb}), because the only available
+replacement discards the factor that carries $\Omega$. It cannot appeal to
+reflection positivity (Section~\ref{sec:routes}\ref{sub:routec}) or to
+log-concavity of the phonon marginal (Section~\ref{sec:routes}\ref{sub:routed}),
+since both fail on two-site examples. It cannot factorize the cutoff-free kernel
+conditionally in time (Section~\ref{sec:kernel}), because an explicit legal
+history does better than the best free directed block by a margin that grows with
+$U/\Omega$. And it cannot ignore the hot sector as rare, by
+Section~\ref{sec:vtail}.
+
+What survives is localized. The facing-plateau lemma of
+Section~\ref{sec:kernel} supplies an explicit local cost of $3UW/22$ on each
+facing plateau, with $W=\min(L_{0},1/\Omega)$ and $L_{0}$ the plateau length;
+the Duhamel remainder of
+Section~\ref{sec:vtail} supplies a convergent bound on short virtual histories;
+and the directed kernel supplies the correct exponential scale
+$e^{-X\coth(\beta\Omega/4)}$ for a free directed block. The missing object has to
+combine these three into one statement about histories, and its precise form is
+the following.
+
+\subsection{The lemma}
+
+A \emph{charged skeleton} is a space-time set
+$S=\{(e_{i},u_{i})\}_{i=1}^{N}$ of pair-transfer events, on distinct oriented
+bonds of a fixed space-time cylinder, with consecutive events separated in
+imaginary time by at least a dwell scale $L_{0}>0$ and in space by a distance
+monotone in $N$. Call the skeleton
+\emph{persistent} if in addition every pair of consecutive events is connected by
+a charged segment, that is, by a history whose charge on the intermediate region
+is nonzero for the whole dwell interval.
+
+\begin{quote}\itshape
+Charged-skeleton influence bound. There are constants $\eta>0$ and $K<\infty$,
+independent of volume and of $\beta\Omega\in(0,b]$, such that for every persistent
+skeleton $S$ with $N$ events, the sum over all neutral decorations of the
+screened weight satisfies
+\[
+\Bigl|\ \sum_{\text{neutral decorations of }S}\ e^{-\Phi_{\beta}[q]}\,
+(\text{fermionic sign})\Bigr|
+\ \le\ e^{-\eta N+K}\,\varrho\text{-weight}(S),
+\]
+where the right-hand side is normalized by the true partition function, the
+constant $\eta$ may be chosen at least $c\,\frac{3}{22}UW$ for a bounded-overlap
+constant $c>0$, so that the plateau costs are allocated to distinct events, and the sum
+over short nonpersistent histories is bounded by a remainder of Duhamel type that
+is uniform in volume.
+\end{quote}
+
+Four features are essential and none can be dropped. The sum is over signed
+neutral histories and is normalized by $\varrho$, not by a product of free traces:
+Section~\ref{sec:kernel} shows that the product of free directed weights is not an
+upper bound for a legal history, so a normalized signed sum is the weakest object
+that can still be true. The bound is on an \emph{influence}, not on a weight:
+Section~\ref{sec:vtail} shows the weight is algebraically large. The cost is
+allocated along the skeleton with bounded overlap, because the plateau gain is
+local and does not add by itself. And the remainder is uniform in volume, which is
+exactly what the local route of Theorem~\ref{thm:vtailT} achieves on its side and
+what a volume-extensive Duhamel estimate does not.
+
+\subsection{What is not claimed}
+
+No implication is proved here in either direction between the bound just stated
+and the lifted ceiling \eqref{eq:lift}. This note does not show that the bound is
+true, does not show that it is sufficient, and does not show that it is necessary.
+It shows that every route examined either fails on an explicit witness or reduces
+to a statement of this shape. The distortion-valley route of
+Section~\ref{sec:valley} ends at a locality step of the same class, in which
+barrier crossings on adjacent bonds couple through the fermion determinant at
+distance; that step is not shown here to follow from the lemma above. Whether a
+persistent skeleton can be defined so that
+the allocation of plateau costs is both possible and tight remains the central
+open question, and it is a question about the geometry of long-lived pair
+transport, not about the size of the phonon cloud.
+
+\section{Scope of verification, data, and disclosures}
+\label{sec:scope}
+
+\paragraph{What is proved and what is computed.} Every theorem in this note is
+accompanied by a proof. Three kinds of auxiliary evidence appear and are labelled
+where they arise: exact algebraic identities, verified symbolically or in exact
+rational arithmetic; interval-enclosed numerical evaluations of finite matrix
+elements and finite sums; and converged finite-Fock exact diagonalization of small
+systems, which is numerical evidence and not a proof of any infinite-dimensional
+statement. No exact diagonalization result is used as a hypothesis of any theorem.
+
+\paragraph{Replay scripts.} The arithmetic underlying
+Theorem~\ref{thm:dir}, Proposition~\ref{prop:witness},
+Theorem~\ref{thm:family}, Proposition~\ref{prop:loop} and
+Theorem~\ref{thm:plateau} is reproduced by one script, the witnesses of
+Section~\ref{sec:routes} by a second, the channel coefficients
+\eqref{eq:wLF}--\eqref{eq:wlimit} together with the dimer diagonalization of
+Section~\ref{sec:vtail} by a third, the coefficients, identities, window
+constants and trace witnesses of Section~\ref{sec:cdw} by a fourth and an
+independent fifth, and the Born-Oppenheimer surfaces, the splitting thresholds,
+the oscillator-basis diagonalization of the dimer and the locality witness of
+Section~\ref{sec:valley} by a sixth. The route-witness script, the charge-order
+script and the distortion-valley script in addition reject deliberately broken
+variants, nine, twelve and six respectively, each of which must fail. All six are
+included in the supplement with instructions, and each exits with status zero
+when run standalone. The scripts are checks of finite arithmetic; they are not
+certificates for any thermodynamic statement.
+
+\paragraph{Relation to the released results.} The cold-projected ceiling of
+\cite{largeu} is used as an input and is not re-derived. The obstruction families
+of Section~\ref{sec:routes} are stated for the estimates examined, not for all
+possible estimates of that name. Nothing in this note changes the status of any
+released result.
+
+\paragraph{Use of software and language models.} AI tools were used for drafting,
+calculation and checking under the author's direction and review. All theorems
+were checked by hand against the proofs, and all numerical claims are reproducible
+from the scripts described above.
+
+This preprint has not been peer reviewed.
+
+\paragraph{Data availability.} The manuscript source, the bibliography and the
+six replay scripts are archived with this note. Released program results are
+cited by DOI: \cite{largeu,strong,barriers2,barriers1,linear5}.
+
+\bibliographystyle{plain}
+\bibliography{refs}
+
+\end{document}

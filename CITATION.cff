@@ -1,0 +1,85 @@
+cff-version: 1.2.0
+message: Please cite the preprint and its replay supplement. The manuscript text is licensed under CC-BY-4.0; the replay scripts and the remaining files are licensed under Apache-2.0.
+title: 'Replay supplement for Obstructions to lifting cold-phonon pairing bounds to the full Gibbs state in the Holstein model'
+authors:
+- family-names: Rens
+  given-names: Davis
+  affiliation: SuperMatics Inc.
+  orcid: 'https://orcid.org/0000-0001-5839-5197'
+doi: 10.5281/zenodo.24419889
+version: 1.0.0
+date-released: 2026-11-21
+license: Apache-2.0
+abstract: >-
+  The tagged release tree of the preprint "Obstructions to lifting cold-phonon pairing
+  bounds to the full Gibbs state in the Holstein model": the reviewed manuscript source,
+  the released PDF and six standalone replay scripts that check every finite arithmetic
+  witness in exact rational and outward-interval arithmetic, with guarded mutant suites.
+  The paper records why five natural route families fail to lift a released cold-projected
+  pairing ceiling to the Gibbs state of the unprojected Holstein Hamiltonian at large U/Omega,
+  quantifies a sixth route in the distortion coordinate, proves the hot-sector population
+  bound with constant 1/4096 on the dimer and with volume-uniform constants on tori and
+  finite vertex-transitive regular graphs, and isolates the remaining open statement. No
+  pairing ceiling and no bound on any critical temperature is proved or disproved.
+references:
+- type: article
+  status: preprint
+  title: 'Obstructions to lifting cold-phonon pairing bounds to the full Gibbs state in the Holstein model'
+  authors:
+  - family-names: Rens
+    given-names: Davis
+    affiliation: SuperMatics Inc.
+    orcid: 'https://orcid.org/0000-0001-5839-5197'
+  year: 2026
+  doi: 10.5281/zenodo.24419885
+  license: CC-BY-4.0
+- type: article
+  status: preprint
+  title: 'Complex-rotation pairing bounds for a cold-projected bipolaron-phonon effective model and obstructions to microscopic extensions in the two-dimensional Holstein model'
+  authors:
+  - family-names: Rens
+    given-names: Davis
+    affiliation: SuperMatics Inc.
+    orcid: 'https://orcid.org/0000-0001-5839-5197'
+  year: 2026
+  doi: 10.5281/zenodo.24415833
+- type: article
+  status: preprint
+  title: 'A strong-coupling ceiling of 6000 t^2/U for electronic pair correlations in the two-dimensional Holstein model'
+  authors:
+  - family-names: Rens
+    given-names: Davis
+    affiliation: SuperMatics Inc.
+    orcid: 'https://orcid.org/0000-0001-5839-5197'
+  year: 2026
+  doi: 10.5281/zenodo.24414616
+- type: article
+  status: preprint
+  title: 'Method obstructions to linear-in-frequency pairing ceilings in electron-phonon models: integrated cumulants, positive determinants, and the vanishing effective attraction'
+  authors:
+  - family-names: Rens
+    given-names: Davis
+    affiliation: SuperMatics Inc.
+    orcid: 'https://orcid.org/0000-0001-5839-5197'
+  year: 2026
+  doi: 10.5281/zenodo.24410350
+- type: article
+  status: preprint
+  title: 'Determinant zeros and method-specific barriers to linear-in-frequency pairing bounds in the Holstein model'
+  authors:
+  - family-names: Rens
+    given-names: Davis
+    affiliation: SuperMatics Inc.
+    orcid: 'https://orcid.org/0000-0001-5839-5197'
+  year: 2026
+  doi: 10.5281/zenodo.24384373
+- type: article
+  status: preprint
+  title: 'Imaginary-time estimates and method barriers beyond the two-thirds adiabatic bound'
+  authors:
+  - family-names: Rens
+    given-names: Davis
+    affiliation: SuperMatics Inc.
+    orcid: 'https://orcid.org/0000-0001-5839-5197'
+  year: 2026
+  doi: 10.5281/zenodo.24374043
