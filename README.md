@@ -1,4 +1,5 @@
 # Obstructions to lifting cold-phonon pairing bounds to the full Gibbs state in the Holstein model
+Research record: [Obstructions to lifting cold-phonon pairing bounds to the full Gibbs state in the Holstein model](https://supermatics.io/research/full-gibbs-pairing-obstructions).
 
 Davis Rens, SuperMatics Inc., [ORCID 0000-0001-5839-5197](https://orcid.org/0000-0001-5839-5197)
 
